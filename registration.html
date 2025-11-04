@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Step Form</title>
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Noto+Serif+Bengali:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+   <style>
+    body {
+        background: #c9e6d3;
+        /* Use flexbox to center the content */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh; /* Set a minimum height to enable vertical centering */
+        margin: 0;
+    }
+    .container {
+        /* The container now acts as the centered box */
+        width: 100%;
+        max-width: 900px;
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        /* Remove the margin-top as it's no longer needed for centering */
+        margin: 0 auto;
+    }
+
+    /* ... rest of the styles ... */
+    .step {
+        padding: 30px;
+    }
+    .progress-bar-container {
+        width: 100%;
+        background-color: #e9ecef;
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+    .progress-bar {
+        height: 10px;
+        border-radius: 5px;
+        transition: width 0.4s ease;
+        background-color: #2c7d46; /* Updated color */
+    }
+    h2 {
+        margin-bottom: 20px;
+    }
+    .btn-custom-next ,
+    .btn-custom-previous {
+        background-color: #2c7d46;
+        border-color: #2c7d46;
+        color: #ffffff;
+    }
+    .btn-custom-next:hover ,
+    .btn-custom-previous:hover {
+        background-color: #236538;
+        border-color: #236538;
+    }
+</style>
+</head>
+<body>
+
+<div class="container justify-content-center">
+    <div class="card border-0">
+        <div class="card-body">
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progress-bar" role="progressbar" style="width: 33.33%" aria-valuenow="33.33" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+            <form id="multi-step-form">
+
+                <div id="step-1" class="step">
+                    <h2>Account Information</h2>
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirm-password" class="form-label">Confirm Password</label>
+                        <input type="password" class="form-control" id="confirm-password" required>
+                    </div>
+                    <div class="alert alert-danger" id="password-error" style="display:none;">Passwords do not match.</div>
+                    <button type="button" class="btn btn-custom-next float-end next-step">Next</button>
+                </div>
+
+                <div id="step-2" class="step" style="display:none;">
+                    <h2>Address Details</h2>
+                    <div class="mb-3">
+                        <label for="address" class="form-label">Address</label>
+                        <input type="text" class="form-control" id="address" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="mobile-number" class="form-label">Mobile Number</label>
+                        <input type="tel" class="form-control" id="mobile-number" required>
+                    </div>
+                    <button type="button" class="btn btn-secondary prev-step btn-custom-previous">Previous</button>
+                    <button type="button" class="btn btn-custom-next float-end next-step">Next</button>
+                </div>
+
+                <div id="step-3" class="step" style="display:none;">
+                    <h2>Confirmation</h2>
+                    <p>Please review your information before submitting.</p>
+                    <div id="summary" class="alert alert-info"></div>
+                    <button type="button" class="btn btn-secondary prev-step btn-custom-previous">Previous</button>
+                    <button type="submit" class="btn btn-success float-end">Submit</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const steps = document.querySelectorAll('.step');
+    const nextButtons = document.querySelectorAll('.next-step');
+    const prevButtons = document.querySelectorAll('.prev-step');
+    const form = document.getElementById('multi-step-form');
+    const progressBar = document.getElementById('progress-bar');
+    
+    // New variables for password validation
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirm-password');
+    const passwordError = document.getElementById('password-error');
+
+    let currentStep = 0;
+
+    // Function to show the current step and hide others
+    function showStep(stepIndex) {
+        steps.forEach((step, index) => {
+            step.style.display = index === stepIndex ? 'block' : 'none';
+        });
+        updateProgressBar(stepIndex);
+    }
+
+    // Function to update the progress bar
+    function updateProgressBar(stepIndex) {
+        const progress = ((stepIndex + 1) / steps.length) * 100;
+        progressBar.style.width = `${progress}%`;
+        progressBar.setAttribute('aria-valuenow', progress);
+    }
+    
+    // Function to validate step 1 (password match)
+    function validateStep1() {
+        if (passwordInput.value !== confirmPasswordInput.value) {
+            passwordError.style.display = 'block';
+            return false;
+        }
+        passwordError.style.display = 'none';
+        return true;
+    }
+
+    // "Next" button click handler
+    nextButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // Check for step-specific validation before proceeding
+            if (currentStep === 0) {
+                if (!validateStep1()) {
+                    return; // Stop if validation fails
+                }
+            }
+            
+            // Move to the next step
+            if (currentStep < steps.length - 1) {
+                currentStep++;
+                showStep(currentStep);
+                if (currentStep === steps.length - 1) {
+                    displaySummary();
+                }
+            }
+        });
+    });
+
+    // "Previous" button click handler
+    prevButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            if (currentStep > 0) {
+                currentStep--;
+                showStep(currentStep);
+            }
+        });
+    });
+
+    // Function to display collected form data on the confirmation step
+    function displaySummary() {
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const address = document.getElementById('address').value;
+        const mobileNumber = document.getElementById('mobile-number').value; 
+        const summaryDiv = document.getElementById('summary');
+
+        summaryDiv.innerHTML = `
+            <strong>Name:</strong> ${name}<br>
+            <strong>Email:</strong> ${email}<br>
+            <strong>Address:</strong> ${address}<br>
+            <strong>Mobile Number:</strong> ${mobileNumber}
+        `;
+    }
+
+    // Form submission handler
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        // In a real application, you would send this data to a server
+        alert('Form Submitted Successfully!');
+        console.log({
+            name: document.getElementById('name').value,
+            email: document.getElementById('email').value,
+            password: document.getElementById('password').value,
+            address: document.getElementById('address').value,
+            mobileNumber: document.getElementById('mobile-number').value,
+        });
+        form.reset();
+        currentStep = 0;
+        showStep(currentStep);
+    });
+
+    // Initialize the form on page load
+    showStep(currentStep);
+</script>
+
+</body>
+</html>
