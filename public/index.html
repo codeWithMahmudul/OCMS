@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ComplainBox — OCMS (Student Project)</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet" />
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+    
+
+    <!-- Project CSS -->
+    <link rel="stylesheet" href="../shared/css/style.css" />
+    <link rel="stylesheet" href="../shared/css/navbar.css" />
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-modern sticky-top">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center" href="index.html">
+            <div class="logo-circle"><i class="fas fa-comments"></i></div>
+            <span class="navbar-title ms-2">ComplainBox</span>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"><i class="fas fa-bars"></i></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navMain">
+            <ul class="navbar-nav ms-auto align-items-center">
+                <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+                <li class="nav-item"><a class="nav-link" href="#how-it-works">Process</a></li>
+                <li class="nav-item"><a class="nav-link" href="../user-dashboard/complaint-list.html">Complaints</a></li>
+                <li class="nav-item"><a class="nav-link" href="../user-dashboard/dashboard.html">Dashboard</a></li>
+                <li class="nav-item ms-3">
+                    <a class="btn btn-outline-primary btn-sm" href="../auth/login.html">Login</a>
+                </li>
+                <li class="nav-item ms-2">
+                    <a class="btn btn-primary btn-sm" href="../auth/registration.html">Get Started</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero -->
+<section id="home" class="hero-section">
+    <div class="container">
+        <div class="row align-items-center gy-5">
+            <div class="col-lg-6">
+                <span class="badge bg-primary-soft mb-3"><i class="fas fa-shield-alt me-1"></i> Secure & Anonymous</span>
+                <h1 class="hero-title">Your voice matters. Report safely, track easily.</h1>
+                <p class="hero-description">ComplainBox is a lightweight, anonymous complaint management system — built as a student project to demonstrate a multi‑tenant SaaS approach. Submit anonymous reports, get unique tracking IDs, and follow the resolution workflow.</p>
+
+                <div class="mt-4">
+                    <a class="btn btn-primary btn-lg me-3" href="../auth/registration.html"><i class="fas fa-rocket me-2"></i>Start free (demo)</a>
+                    <a class="btn btn-outline-primary btn-lg" href="#how-it-works"><i class="fas fa-play me-2"></i>How it works</a>
+                </div>
+
+                <div class="hero-stats mt-5">
+                    <div class="row text-center">
+                        <div class="col-4">
+                            <div class="stat-number">100+</div>
+                            <div class="stat-label">Resolved</div>
+                        </div>
+                        <div class="col-4">
+                            <div class="stat-number">20+</div>
+                            <div class="stat-label">Orgs (demo)</div>
+                        </div>
+                        <div class="col-4">
+                            <div class="stat-number">99.9%</div>
+                            <div class="stat-label">Uptime (sim.)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="hero-image">
+                    <div class="hero-illustration shadow-lg rounded-4">
+                        <!-- Replace with a real screenshot in assets/images later -->
+                        <img src="assets/images/handling-client-concerns.webp" alt="Dashboard preview" class="img-fluid rounded-4">
+                    </div>
+
+                    <div class="floating-card card-1">
+                        <i class="fas fa-user-secret"></i>
+                        <span>Anonymous Reporting</span>
+                    </div>
+                    <div class="floating-card card-2">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Analytics</span>
+                    </div>
+                    <div class="floating-card card-3">
+                        <i class="fas fa-lock"></i>
+                        <span>Secure</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features -->
+<section id="features" class="features-section">
+    <div class="container">
+        <div class="section-header text-center mb-5">
+            <span class="section-badge">Features</span>
+            <h2 class="section-title">Designed for organizations & students</h2>
+            <p class="section-description">Simple, modern, and focused on anonymity and tenant isolation — a practical demo for university projects and small organizations.</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-user-secret"></i></div>
+                    <h3 class="feature-title">Anonymous Submission</h3>
+                    <p class="feature-description">Submit complaints without sharing identity. A tracking ID is returned for follow up.</p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-users-cog"></i></div>
+                    <h3 class="feature-title">Multi-tenant</h3>
+                    <p class="feature-description">Tenant separation demonstrated via separate org portals and data isolation (concept).</p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+                    <h3 class="feature-title">Secure by design</h3>
+                    <p class="feature-description">Passwords hashed and careful handling of anonymous submissions (backend to implement).</p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-file-alt"></i></div>
+                    <h3 class="feature-title">Complaint Workflow</h3>
+                    <p class="feature-description">Track complaints, assign to officers, and manage statuses.</p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-bell"></i></div>
+                    <h3 class="feature-title">Notifications (future)</h3>
+                    <p class="feature-description">Placeholder for email/notification features to be added later.</p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-mobile-alt"></i></div>
+                    <h3 class="feature-title">Responsive UI</h3>
+                    <p class="feature-description">Designed mobile-first with Bootstrap so it works on phones and tablets.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Process (improved design) -->
+<section id="how-it-works" class="how-it-works-section">
+    <div class="container">
+        <div class="section-header text-center mb-5">
+            <span class="section-badge">Process</span>
+            <h2 class="section-title">Submit a complaint in 4 simple steps</h2>
+            <p class="section-description">Clear process for anonymous and registered users.</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="timeline-step">
+                    <div class="step-number">01</div>
+                    <div class="step-icon bg-indigo">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <h5 class="step-title">Register</h5>
+                    <p class="step-description">Create an account (optional for anonymous) and pick your organization.</p>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="timeline-step">
+                    <div class="step-number">02</div>
+                    <div class="step-icon bg-teal">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <h5 class="step-title">Submit</h5>
+                    <p class="step-description">Fill complaint details, select category, and attach evidence if any.</p>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="timeline-step">
+                    <div class="step-number">03</div>
+                    <div class="step-icon bg-yellow">
+                        <i class="fas fa-users-cog"></i>
+                    </div>
+                    <h5 class="step-title">Investigate</h5>
+                    <p class="step-description">Assigned officers review and update status. Anonymous flag respected.</p>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="timeline-step">
+                    <div class="step-number">04</div>
+                    <div class="step-icon bg-green">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h5 class="step-title">Resolve</h5>
+                    <p class="step-description">Resolution notes posted and tracking ID used to follow progress.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact / Questions (improved design) -->
+<section id="contact" class="contact-section">
+    <div class="container">
+        <div class="row align-items-stretch gy-4">
+            <div class="col-lg-5">
+                <div class="contact-info-card p-4 rounded-4 shadow-sm">
+                    <h4 class="mb-1">Questions? Need help?</h4>
+                    <p class="text-muted mb-3">This project is a university assignment and a demo of a SaaS complaint system. For collaborations or to suggest features, use the form or email below.</p>
+
+                    <div class="d-flex gap-3 mb-3">
+                        <div class="icon-box bg-primary-soft"><i class="fas fa-envelope"></i></div>
+                        <div>
+                            <strong>Email</strong>
+                            <div class="text-muted small">support@complainbox.local</div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-3 mb-3">
+                        <div class="icon-box bg-primary-soft"><i class="fas fa-phone"></i></div>
+                        <div>
+                            <strong>Phone</strong>
+                            <div class="text-muted small">+880 1234 567 890</div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-3">
+                        <div class="icon-box bg-primary-soft"><i class="fas fa-map-marker-alt"></i></div>
+                        <div>
+                            <strong>Location</strong>
+                            <div class="text-muted small">Dhaka, Bangladesh (student project)</div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <a href="../auth/registration.html" class="btn btn-outline-primary">Create account</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-7">
+                <div class="contact-form-wrapper p-4 rounded-4 shadow-sm h-100">
+                    <form id="contactForm" class="row g-3" onsubmit="return false;">
+                        <div class="col-md-6">
+                            <label class="form-label">Your name</label>
+                            <input type="text" class="form-control" id="contactName" placeholder="Name">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" id="contactEmail" placeholder="name@example.com">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Subject</label>
+                            <input type="text" class="form-control" id="contactSubject" placeholder="What is this about?">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Message</label>
+                            <textarea class="form-control" id="contactMessage" rows="4" placeholder="Write your message"></textarea>
+                        </div>
+                        <div class="col-12 d-flex justify-content-end">
+                            <button id="contactSubmit" class="btn btn-primary">Send message</button>
+                        </div>
+                    </form>
+                    <div id="contactNotice" class="mt-3" style="display:none;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer (improved layout) -->
+<footer class="footer">
+    <div class="container">
+        <div class="row gy-4">
+            <div class="col-lg-4">
+                <div class="footer-about">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="logo-circle"><i class="fas fa-comments"></i></div>
+                        <h5 class="ms-2 mb-0">ComplainBox</h5>
+                    </div>
+                    <p>Student project — OCMS SaaS demo. Built to demonstrate multi‑tenant anonymous complaint workflows.</p>
+                    <div class="social-links mt-3">
+                        <a href="#" aria-label="facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="linkedin"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-2">
+                <h6 class="footer-title">Product</h6>
+                <ul class="footer-links list-unstyled">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="pages/complaint-form.html">New complaint</a></li>
+                    <li><a href="pages/complaint-list.html">All complaints</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-3">
+                <h6 class="footer-title">Resources</h6>
+                <ul class="footer-links list-unstyled">
+                    <li><a href="#">Help center</a></li>
+                    <li><a href="#">Privacy</a></li>
+                    <li><a href="#">Terms</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-3">
+                <h6 class="footer-title">Subscribe</h6>
+                <p class="small">Get updates on progress and new features (demo).</p>
+                <form class="d-flex gap-2" onsubmit="return false;">
+                    <input class="form-control" placeholder="Your email">
+                    <button class="btn btn-primary">Subscribe</button>
+                </form>
+            </div>
+        </div>
+
+        <hr class="footer-divider" />
+
+        <div class="footer-bottom text-center py-3">
+            <small>&copy; 2025 ComplainBox — University Project. All rights reserved.</small>
+        </div>
+    </div>
+</footer>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../shared/js/main.js"></script>
+<script>
+    // small demo behavior for contact form
+    $('#contactSubmit').on('click', function(e){
+        e.preventDefault();
+        const name = $('#contactName').val().trim();
+        const email = $('#contactEmail').val().trim();
+        const msg = $('#contactMessage').val().trim();
+        if(!name || !email || !msg){
+            $('#contactNotice').show().html('<div class="alert alert-danger">Please fill all required fields.</div>');
+            return;
+        }
+        $('#contactNotice').show().html('<div class="alert alert-success">Demo message sent. Thank you!</div>');
+        $('#contactForm')[0].reset();
+    });
+</script>
+</body>
+</html>
