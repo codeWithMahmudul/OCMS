@@ -1,0 +1,149 @@
+/* ===== CSS VARIABLES FOR COMPLAINBOX SAAS ===== */
+
+:root {
+    /* === Primary Colors === */
+    --primary-color: #4F46E5;
+    --primary-dark: #4338CA;
+    --primary-light: #EEF2FF;
+    --primary-lighter: #F8F9FF;
+    
+    /* === Secondary Colors === */
+    --secondary-color: #7C3AED;
+    --secondary-dark: #6D28D9;
+    --secondary-light: #F5F3FF;
+    
+    /* === Accent Colors === */
+    --accent-color: #EC4899;
+    --accent-dark: #DB2777;
+    --accent-light: #FCE7F3;
+    
+    /* === Status Colors === */
+    --status-pending: #F59E0B;
+    --status-pending-bg: #FEF3C7;
+    --status-in-progress: #3B82F6;
+    --status-in-progress-bg: #DBEAFE;
+    --status-resolved: #10B981;
+    --status-resolved-bg: #D1FAE5;
+    --status-rejected: #EF4444;
+    --status-rejected-bg: #FEE2E2;
+    
+    /* === Text Colors === */
+    --text-dark: #1F2937;
+    --text-gray: #6B7280;
+    --text-light: #9CA3AF;
+    --text-muted: #D1D5DB;
+    
+    /* === Background Colors === */
+    --bg-white: #FFFFFF;
+    --bg-light: #F9FAFB;
+    --bg-gray: #F3F4F6;
+    --bg-dark: #111827;
+    
+    /* === Border Colors === */
+    --border-color: #E5E7EB;
+    --border-light: #F3F4F6;
+    --border-dark: #D1D5DB;
+    
+    /* === Spacing === */
+    --spacing-xs: 0.25rem;      /* 4px */
+    --spacing-sm: 0.5rem;       /* 8px */
+    --spacing-md: 0.75rem;      /* 12px */
+    --spacing-lg: 1rem;         /* 16px */
+    --spacing-xl: 1.5rem;       /* 24px */
+    --spacing-2xl: 2rem;        /* 32px */
+    --spacing-3xl: 3rem;        /* 48px */
+    --spacing-4xl: 4rem;        /* 64px */
+    
+    /* === Font Sizes === */
+    --font-xs: 0.75rem;         /* 12px */
+    --font-sm: 0.875rem;        /* 14px */
+    --font-base: 0.95rem;       /* 15.2px */
+    --font-md: 1rem;            /* 16px */
+    --font-lg: 1.125rem;        /* 18px */
+    --font-xl: 1.25rem;         /* 20px */
+    --font-2xl: 1.5rem;         /* 24px */
+    --font-3xl: 1.875rem;       /* 30px */
+    --font-4xl: 2.25rem;        /* 36px */
+    
+    /* === Font Weights === */
+    --font-light: 300;
+    --font-normal: 400;
+    --font-medium: 500;
+    --font-semibold: 600;
+    --font-bold: 700;
+    --font-extrabold: 800;
+    
+    /* === Border Radius === */
+    --radius-sm: 0.25rem;       /* 4px */
+    --radius-md: 0.5rem;        /* 8px */
+    --radius-lg: 0.75rem;       /* 12px */
+    --radius-xl: 1rem;          /* 16px */
+    --radius-2xl: 1.5rem;       /* 24px */
+    --radius-full: 9999px;
+    
+    /* === Shadows === */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    --shadow-primary: 0 4px 14px rgba(79, 70, 229, 0.4);
+    --shadow-primary-hover: 0 6px 20px rgba(79, 70, 229, 0.5);
+    
+    /* === Transitions === */
+    --transition-fast: 0.15s ease;
+    --transition-base: 0.3s ease;
+    --transition-slow: 0.5s ease;
+    
+    /* === Z-Index Layers === */
+    --z-dropdown: 1000;
+    --z-sticky: 1020;
+    --z-fixed: 1030;
+    --z-modal-backdrop: 1040;
+    --z-modal: 1050;
+    --z-popover: 1060;
+    --z-tooltip: 1070;
+    
+    /* === Sidebar === */
+    --sidebar-width: 280px;
+    --sidebar-collapsed-width: 70px;
+    --sidebar-bg: #FFFFFF;
+    --sidebar-text: #6B7280;
+    --sidebar-active: #4F46E5;
+    --sidebar-hover-bg: #F8F9FF;
+    
+    /* === Navbar === */
+    --navbar-height: 70px;
+    --navbar-bg: #FFFFFF;
+    --navbar-border: #E5E7EB;
+    
+    /* === Dashboard === */
+    --content-max-width: 1400px;
+    --content-padding: 2rem;
+}
+
+/* === Dark Mode Variables === */
+[data-theme="dark"] {
+    --primary-color: #6366F1;
+    --text-dark: #F9FAFB;
+    --text-gray: #D1D5DB;
+    --text-light: #9CA3AF;
+    --bg-white: #1F2937;
+    --bg-light: #111827;
+    --bg-gray: #1F2937;
+    --bg-dark: #000000;
+    --border-color: #374151;
+    --sidebar-bg: #111827;
+    --navbar-bg: #1F2937;
+}
+
+/* === Responsive Breakpoints === */
+/* These are used in media queries */
+/* 
+--breakpoint-xs: 0px;
+--breakpoint-sm: 576px;
+--breakpoint-md: 768px;
+--breakpoint-lg: 992px;
+--breakpoint-xl: 1200px;
+--breakpoint-2xl: 1400px;
+*/

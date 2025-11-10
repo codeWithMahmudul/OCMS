@@ -27,10 +27,12 @@
     <aside class="dashboard-sidebar" id="sidebar">
         <div class="sidebar-header">
             <div class="sidebar-brand">
-                <div class="logo-circle-sidebar">
-                    <i class="fas fa-comments"></i>
-                </div>
-                <span class="brand-text">ComplainBox</span>
+                <a href="../public/index.html" class="text-decoration-none d-flex align-items-center">
+                    <div class="logo-circle-sidebar mx-2">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <span class="brand-text">ComplainBox</span>
+                </a>    
             </div>
             <button class="sidebar-toggle" id="sidebarToggle">
                 <i class="fas fa-times"></i>
@@ -287,48 +289,7 @@
                                         </button>
                                     </div>
                                 </form>
-
-                                <!-- Two Factor Authentication -->
-                                <div class="security-option">
-                                    <div class="security-option-content">
-                                        <div class="security-icon">
-                                            <i class="fas fa-mobile-alt"></i>
-                                        </div>
-                                        <div>
-                                            <h6>Two-Factor Authentication</h6>
-                                            <p>Add an extra layer of security to your account</p>
-                                        </div>
-                                    </div>
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" id="twoFactor">
-                                    </div>
-                                </div>
-
-                                <!-- Active Sessions -->
-                                <div class="mt-4">
-                                    <h6 class="section-subtitle">Active Sessions</h6>
-                                    <div class="session-list">
-                                        <div class="session-item">
-                                            <div class="session-icon">
-                                                <i class="fas fa-laptop"></i>
-                                            </div>
-                                            <div class="session-info">
-                                                <h6>Windows - Chrome</h6>
-                                                <p>Last active: 2 minutes ago · 192.168.1.1</p>
-                                            </div>
-                                            <span class="session-badge current">Current</span>
-                                        </div>
-                                        <div class="session-item">
-                                            <div class="session-icon">
-                                                <i class="fas fa-mobile"></i>
-                                            </div>
-                                            <div class="session-info">
-                                                <h6>iPhone - Safari</h6>
-                                                <p>Last active: 2 hours ago · 192.168.1.25</p>
-                                            </div>
-                                            <button class="btn-session-revoke">Revoke</button>
-                                        </div>
-                                    </div>
+                    
                                 </div>
                             </div>
                         </div>
