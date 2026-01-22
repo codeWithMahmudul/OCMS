@@ -85,12 +85,8 @@ $(document).ready(function() {
     }
     
     // === Initialize Bootstrap Dropdowns ===
-    if (typeof bootstrap !== 'undefined') {
-        const dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
-        dropdownElementList.map(function (dropdownToggleEl) {
-            return new bootstrap.Dropdown(dropdownToggleEl);
-        });
-    }
+    // Bootstrap auto-initializes dropdowns with data-bs-toggle="dropdown"
+    // No manual initialization needed
     
     // === Search Functionality ===
     let searchTimeout;
@@ -150,6 +146,9 @@ $(document).ready(function() {
     }
     
     // === User Dropdown (if not using Bootstrap) ===
+    // Commented out - this conflicts with Bootstrap dropdowns
+    // If you need custom dropdowns without Bootstrap, uncomment this:
+    /*
     $('.user-btn').click(function(e) {
         e.stopPropagation();
         $(this).next('.dropdown-menu').toggleClass('show');
@@ -162,6 +161,7 @@ $(document).ready(function() {
     $('.dropdown-menu').click(function(e) {
         e.stopPropagation();
     });
+    */
     
     // === Form Auto-save (Draft) ===
     let autoSaveTimeout;

@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Logs - Super Admin - ComplainBox</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../shared/css/variables.css">
+    <link rel="stylesheet" href="../../shared/css/utilities.css">
+    <link rel="stylesheet" href="../../shared/css/dashboard-common.css">
+    <link rel="stylesheet" href="../css/super-admin.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="dashboard-sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Super Admin</span>
+                </div>
+                <button type="button" class="sidebar-toggle" id="sidebarToggle">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="organizations.html" class="nav-item">
+                    <i class="fas fa-building"></i>
+                    <span>Organizations</span>
+                </a>
+                <a href="users.html" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    <span>All Users</span>
+                </a>
+                <a href="analytics.html" class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Platform Analytics</span>
+                </a>
+                <a href="billing.html" class="nav-item">
+                    <i class="fas fa-credit-card"></i>
+                    <span>Billing & Plans</span>
+                </a>
+                <a href="logs.html" class="nav-item active">
+                    <i class="fas fa-list-alt"></i>
+                    <span>System Logs</span>
+                </a>
+                <a href="system-settings.html" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>System Settings</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button type="button" class="btn-logout" onclick="handleLogout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <!-- Top Navigation -->
+            <nav class="dashboard-navbar">
+                <div class="navbar-left">
+                    <button type="button" class="sidebar-toggle mobile-toggle" id="mobileSidebarToggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 class="page-title">System Logs</h1>
+                </div>
+                
+                <div class="navbar-right">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search logs..." id="globalSearch">
+                    </div>
+                    
+                    <div class="dropdown notification-dropdown">
+                        <button type="button" class="icon-btn" id="notificationDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-badge" id="notificationCount">3</span>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end notification-panel" aria-labelledby="notificationDropdown">
+                            <div class="notification-header">
+                                <h6>Notifications</h6>
+                                <button type="button" class="btn-link" onclick="markAllAsRead()">Mark all as read</button>
+                            </div>
+                            <div class="notification-list" id="notificationList"></div>
+                            <div class="notification-footer">
+                                <a href="logs.html" class="btn-link">View all notifications</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="dropdown user-dropdown">
+                        <button type="button" class="user-btn" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="user-avatar">
+                                <i class="fas fa-user-shield"></i>
+                            </div>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end user-menu" aria-labelledby="userDropdown">
+                            <div class="user-menu-header">
+                                <div class="user-avatar">
+                                    <i class="fas fa-user-shield"></i>
+                                </div>
+                                <div class="user-info">
+                                    <div class="user-name" id="dropdownUserName">Super Admin</div>
+                                    <div class="user-role">System Administrator</div>
+                                </div>
+                            </div>
+                            <a href="#" class="dropdown-item">
+                                <i class="fas fa-user"></i>
+                                <span>My Profile</span>
+                            </a>
+                            <a href="system-settings.html" class="dropdown-item">
+                                <i class="fas fa-cog"></i>
+                                <span>Settings</span>
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a href="#" class="dropdown-item text-danger" onclick="handleLogout()">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Logout</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Stats Cards -->
+                <div class="row g-3 mb-4">
+                    <div class="col-xl-3 col-md-6">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-info">
+                                <i class="fas fa-list"></i>
+                            </div>
+                            <div class="stat-details">
+                                <div class="stat-value" id="totalLogs">0</div>
+                                <div class="stat-label">Total Logs Today</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-danger">
+                                <i class="fas fa-exclamation-circle"></i>
+                            </div>
+                            <div class="stat-details">
+                                <div class="stat-value" id="errorLogs">0</div>
+                                <div class="stat-label">Errors</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-warning">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="stat-details">
+                                <div class="stat-value" id="warningLogs">0</div>
+                                <div class="stat-label">Warnings</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-success">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="stat-details">
+                                <div class="stat-value" id="successLogs">0</div>
+                                <div class="stat-label">Success</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Logs Table -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-clipboard-list me-2"></i>Activity Logs
+                            </h5>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <button type="button" class="btn btn-outline-primary btn-sm" onclick="refreshLogs()">
+                                    <i class="fas fa-sync-alt me-1"></i>Refresh
+                                </button>
+                                <button type="button" class="btn btn-outline-primary btn-sm" onclick="exportLogs()">
+                                    <i class="fas fa-download me-1"></i>Export
+                                </button>
+                                <button type="button" class="btn btn-outline-danger btn-sm" onclick="clearLogs()">
+                                    <i class="fas fa-trash me-1"></i>Clear Old Logs
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <!-- Filters -->
+                        <div class="table-filters mb-3">
+                            <div class="row g-2">
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control form-control-sm" id="searchLogs" placeholder="Search logs...">
+                                </div>
+                                <div class="col-md-2">
+                                    <select class="form-select form-select-sm" id="levelFilter">
+                                        <option value="">All Levels</option>
+                                        <option value="error">Error</option>
+                                        <option value="warning">Warning</option>
+                                        <option value="info">Info</option>
+                                        <option value="success">Success</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <select class="form-select form-select-sm" id="typeFilter">
+                                        <option value="">All Types</option>
+                                        <option value="auth">Authentication</option>
+                                        <option value="user">User Activity</option>
+                                        <option value="system">System</option>
+                                        <option value="complaint">Complaint</option>
+                                        <option value="payment">Payment</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="date" class="form-control form-control-sm" id="dateFilter">
+                                </div>
+                                <div class="col-md-3">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary w-100" onclick="resetFilters()">
+                                        <i class="fas fa-redo me-1"></i>Reset Filters
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Table -->
+                        <div class="table-responsive">
+                            <table class="table table-hover table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Level</th>
+                                        <th>Type</th>
+                                        <th>Message</th>
+                                        <th>User</th>
+                                        <th>IP Address</th>
+                                        <th>Timestamp</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="logsTableBody">
+                                    <tr>
+                                        <td colspan="7" class="text-center py-4">
+                                            <div class="spinner-border text-primary" role="status">
+                                                <span class="visually-hidden">Loading...</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination -->
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <div class="text-muted small" id="paginationInfo">Showing 0 of 0 logs</div>
+                            <nav>
+                                <ul class="pagination pagination-sm mb-0" id="pagination"></ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- View Log Modal -->
+    <div class="modal fade" id="viewLogModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Log Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="viewLogContent"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+    <!-- Bootstrap Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Common Dashboard JS -->
+    <script src="../../shared/js/config.js"></script>
+    <script src="../../shared/js/utils.js"></script>
+    <script src="../../shared/js/dashboard-common.js"></script>
+    
+    <!-- Page Specific JS -->
+    <script src="../js/logs.js"></script>
+</body>
+</html>

@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Settings - Super Admin - ComplainBox</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../shared/css/variables.css">
+    <link rel="stylesheet" href="../../shared/css/utilities.css">
+    <link rel="stylesheet" href="../../shared/css/dashboard-common.css">
+    <link rel="stylesheet" href="../css/super-admin.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="dashboard-sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Super Admin</span>
+                </div>
+                <button type="button" class="sidebar-toggle" id="sidebarToggle">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="organizations.html" class="nav-item">
+                    <i class="fas fa-building"></i>
+                    <span>Organizations</span>
+                </a>
+                <a href="users.html" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    <span>All Users</span>
+                </a>
+                <a href="analytics.html" class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Platform Analytics</span>
+                </a>
+                <a href="billing.html" class="nav-item">
+                    <i class="fas fa-credit-card"></i>
+                    <span>Billing & Plans</span>
+                </a>
+                <a href="logs.html" class="nav-item">
+                    <i class="fas fa-list-alt"></i>
+                    <span>System Logs</span>
+                </a>
+                <a href="system-settings.html" class="nav-item active">
+                    <i class="fas fa-cog"></i>
+                    <span>System Settings</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button type="button" class="btn-logout" onclick="handleLogout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <!-- Top Navigation -->
+            <nav class="dashboard-navbar">
+                <div class="navbar-left">
+                    <button type="button" class="sidebar-toggle mobile-toggle" id="mobileSidebarToggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 class="page-title">System Settings</h1>
+                </div>
+                
+                <div class="navbar-right">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search settings..." id="globalSearch">
+                    </div>
+                    
+                    <div class="dropdown notification-dropdown">
+                        <button type="button" class="icon-btn" id="notificationDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-badge" id="notificationCount">3</span>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end notification-panel" aria-labelledby="notificationDropdown">
+                            <div class="notification-header">
+                                <h6>Notifications</h6>
+                                <button type="button" class="btn-link" onclick="markAllAsRead()">Mark all as read</button>
+                            </div>
+                            <div class="notification-list" id="notificationList"></div>
+                            <div class="notification-footer">
+                                <a href="logs.html" class="btn-link">View all notifications</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="dropdown user-dropdown">
+                        <button type="button" class="user-btn" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="user-avatar">
+                                <i class="fas fa-user-shield"></i>
+                            </div>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end user-menu" aria-labelledby="userDropdown">
+                            <div class="user-menu-header">
+                                <div class="user-avatar">
+                                    <i class="fas fa-user-shield"></i>
+                                </div>
+                                <div class="user-info">
+                                    <div class="user-name" id="dropdownUserName">Super Admin</div>
+                                    <div class="user-role">System Administrator</div>
+                                </div>
+                            </div>
+                            <a href="#" class="dropdown-item">
+                                <i class="fas fa-user"></i>
+                                <span>My Profile</span>
+                            </a>
+                            <a href="system-settings.html" class="dropdown-item">
+                                <i class="fas fa-cog"></i>
+                                <span>Settings</span>
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a href="#" class="dropdown-item text-danger" onclick="handleLogout()">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Logout</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Settings Navigation Tabs -->
+                <ul class="nav nav-tabs mb-4" id="settingsTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="general-tab" data-bs-toggle="tab" data-bs-target="#general" type="button" role="tab">
+                            <i class="fas fa-cog me-1"></i>General
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="email-tab" data-bs-toggle="tab" data-bs-target="#email" type="button" role="tab">
+                            <i class="fas fa-envelope me-1"></i>Email
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="security-tab" data-bs-toggle="tab" data-bs-target="#security" type="button" role="tab">
+                            <i class="fas fa-shield-alt me-1"></i>Security
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="maintenance-tab" data-bs-toggle="tab" data-bs-target="#maintenance" type="button" role="tab">
+                            <i class="fas fa-wrench me-1"></i>Maintenance
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="integrations-tab" data-bs-toggle="tab" data-bs-target="#integrations" type="button" role="tab">
+                            <i class="fas fa-plug me-1"></i>Integrations
+                        </button>
+                    </li>
+                </ul>
+
+                <!-- Settings Tab Content -->
+                <div class="tab-content" id="settingsTabContent">
+                    <!-- General Settings -->
+                    <div class="tab-pane fade show active" id="general" role="tabpanel">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">General Settings</h5>
+                            </div>
+                            <div class="card-body">
+                                <form id="generalSettingsForm">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Platform Name *</label>
+                                            <input type="text" class="form-control" name="platform_name" id="platformName" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Support Email *</label>
+                                            <input type="email" class="form-control" name="support_email" id="supportEmail" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Default Language</label>
+                                            <select class="form-select" name="default_language" id="defaultLanguage">
+                                                <option value="en">English</option>
+                                                <option value="es">Spanish</option>
+                                                <option value="fr">French</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Timezone</label>
+                                            <select class="form-select" name="timezone" id="timezone">
+                                                <option value="UTC">UTC</option>
+                                                <option value="America/New_York">Eastern Time</option>
+                                                <option value="America/Chicago">Central Time</option>
+                                                <option value="America/Los_Angeles">Pacific Time</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <label class="form-label">Platform Description</label>
+                                            <textarea class="form-control" name="description" id="platformDescription" rows="3"></textarea>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="allowRegistration" name="allow_registration">
+                                                <label class="form-check-label" for="allowRegistration">Allow Public Registration</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <button type="button" class="btn btn-primary" onclick="saveGeneralSettings()">
+                                                <i class="fas fa-save me-1"></i>Save Changes
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Email Settings -->
+                    <div class="tab-pane fade" id="email" role="tabpanel">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Email Configuration</h5>
+                            </div>
+                            <div class="card-body">
+                                <form id="emailSettingsForm">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label">SMTP Host *</label>
+                                            <input type="text" class="form-control" name="smtp_host" id="smtpHost" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">SMTP Port *</label>
+                                            <input type="number" class="form-control" name="smtp_port" id="smtpPort" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">SMTP Username</label>
+                                            <input type="text" class="form-control" name="smtp_username" id="smtpUsername">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">SMTP Password</label>
+                                            <input type="password" class="form-control" name="smtp_password" id="smtpPassword">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">From Email *</label>
+                                            <input type="email" class="form-control" name="from_email" id="fromEmail" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">From Name</label>
+                                            <input type="text" class="form-control" name="from_name" id="fromName">
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="smtpEncryption" name="smtp_encryption">
+                                                <label class="form-check-label" for="smtpEncryption">Enable SSL/TLS</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <button type="button" class="btn btn-primary me-2" onclick="saveEmailSettings()">
+                                                <i class="fas fa-save me-1"></i>Save Changes
+                                            </button>
+                                            <button type="button" class="btn btn-outline-primary" onclick="testEmailSettings()">
+                                                <i class="fas fa-paper-plane me-1"></i>Send Test Email
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Security Settings -->
+                    <div class="tab-pane fade" id="security" role="tabpanel">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Security Settings</h5>
+                            </div>
+                            <div class="card-body">
+                                <form id="securitySettingsForm">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Session Timeout (minutes)</label>
+                                            <input type="number" class="form-control" name="session_timeout" id="sessionTimeout" min="5" max="1440">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Max Login Attempts</label>
+                                            <input type="number" class="form-control" name="max_login_attempts" id="maxLoginAttempts" min="3" max="10">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Password Min Length</label>
+                                            <input type="number" class="form-control" name="password_min_length" id="passwordMinLength" min="6" max="20">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Password Expiry (days)</label>
+                                            <input type="number" class="form-control" name="password_expiry" id="passwordExpiry" min="0" max="365">
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-check form-switch mb-2">
+                                                <input class="form-check-input" type="checkbox" id="require2FA" name="require_2fa">
+                                                <label class="form-check-label" for="require2FA">Require Two-Factor Authentication</label>
+                                            </div>
+                                            <div class="form-check form-switch mb-2">
+                                                <input class="form-check-input" type="checkbox" id="requireStrongPassword" name="require_strong_password">
+                                                <label class="form-check-label" for="requireStrongPassword">Require Strong Passwords</label>
+                                            </div>
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="ipWhitelist" name="ip_whitelist">
+                                                <label class="form-check-label" for="ipWhitelist">Enable IP Whitelist</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <button type="button" class="btn btn-primary" onclick="saveSecuritySettings()">
+                                                <i class="fas fa-save me-1"></i>Save Changes
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Maintenance Settings -->
+                    <div class="tab-pane fade" id="maintenance" role="tabpanel">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Maintenance Mode</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert alert-warning">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    Enabling maintenance mode will make the platform inaccessible to all users except super admins.
+                                </div>
+                                <form id="maintenanceSettingsForm">
+                                    <div class="row g-3">
+                                        <div class="col-md-12">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="maintenanceMode" name="maintenance_mode" onchange="toggleMaintenanceFields()">
+                                                <label class="form-check-label" for="maintenanceMode">
+                                                    <strong>Enable Maintenance Mode</strong>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12" id="maintenanceFields" style="display: none;">
+                                            <label class="form-label">Maintenance Message</label>
+                                            <textarea class="form-control" name="maintenance_message" id="maintenanceMessage" rows="4" placeholder="We are currently performing scheduled maintenance. We'll be back soon!"></textarea>
+                                        </div>
+                                        <div class="col-md-12" id="maintenanceSchedule" style="display: none;">
+                                            <label class="form-label">Estimated Completion Time</label>
+                                            <input type="datetime-local" class="form-control" name="maintenance_end" id="maintenanceEnd">
+                                        </div>
+                                        <div class="col-md-12">
+                                            <button type="button" class="btn btn-primary" onclick="saveMaintenanceSettings()">
+                                                <i class="fas fa-save me-1"></i>Save Changes
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                                
+                                <hr class="my-4">
+                                
+                                <h6>Database Maintenance</h6>
+                                <div class="d-flex gap-2 mt-3">
+                                    <button type="button" class="btn btn-outline-primary" onclick="optimizeDatabase()">
+                                        <i class="fas fa-database me-1"></i>Optimize Database
+                                    </button>
+                                    <button type="button" class="btn btn-outline-primary" onclick="clearCache()">
+                                        <i class="fas fa-broom me-1"></i>Clear Cache
+                                    </button>
+                                    <button type="button" class="btn btn-outline-warning" onclick="backupDatabase()">
+                                        <i class="fas fa-download me-1"></i>Backup Database
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Integrations Settings -->
+                    <div class="tab-pane fade" id="integrations" role="tabpanel">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Third-Party Integrations</h5>
+                            </div>
+                            <div class="card-body">
+                                <form id="integrationsSettingsForm">
+                                    <div class="row g-4">
+                                        <div class="col-md-12">
+                                            <h6>Payment Gateway</h6>
+                                            <div class="row g-3 mt-1">
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Stripe API Key</label>
+                                                    <input type="text" class="form-control" name="stripe_key" id="stripeKey">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Stripe Secret Key</label>
+                                                    <input type="password" class="form-control" name="stripe_secret" id="stripeSecret">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <h6>Cloud Storage</h6>
+                                            <div class="row g-3 mt-1">
+                                                <div class="col-md-4">
+                                                    <label class="form-label">AWS Access Key</label>
+                                                    <input type="text" class="form-control" name="aws_key" id="awsKey">
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="form-label">AWS Secret</label>
+                                                    <input type="password" class="form-control" name="aws_secret" id="awsSecret">
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="form-label">S3 Bucket</label>
+                                                    <input type="text" class="form-control" name="s3_bucket" id="s3Bucket">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <h6>Push Notifications</h6>
+                                            <div class="row g-3 mt-1">
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Firebase Server Key</label>
+                                                    <input type="text" class="form-control" name="firebase_key" id="firebaseKey">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Firebase Sender ID</label>
+                                                    <input type="text" class="form-control" name="firebase_sender_id" id="firebaseSenderId">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <button type="button" class="btn btn-primary" onclick="saveIntegrationSettings()">
+                                                <i class="fas fa-save me-1"></i>Save Changes
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+    <!-- Bootstrap Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Common Dashboard JS -->
+    <script src="../../shared/js/config.js"></script>
+    <script src="../../shared/js/utils.js"></script>
+    <script src="../../shared/js/dashboard-common.js"></script>
+    
+    <!-- Page Specific JS -->
+    <script src="../js/system-settings.js"></script>
+</body>
+</html>
