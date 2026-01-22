@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Complaint - ComplainBox</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet" />
+    
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" />
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+    
+    <!-- Project CSS -->
+    <link rel="stylesheet" href="../../shared/css/variables.css">
+    <link rel="stylesheet" href="../../shared/css/style.css">
+    <link rel="stylesheet" href="../../shared/css/utilities.css">
+    <link rel="stylesheet" href="../../auth/assets/css/auth.css">
+    <link rel="stylesheet" href="../css/qr-share.css">
+</head>
+<body class="qr-share-page">
+
+    <!-- Header -->
+    <header class="qr-share-header">
+        <div class="container">
+            <a href="../../public/index.html" class="brand-link">
+                <div class="logo-circle">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <span class="brand-name">ComplainBox</span>
+            </a>
+            <div class="resolver-badge" id="resolverBadge">
+                <i class="fas fa-user-tie me-2"></i>
+                <span id="resolverName">Loading...</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="qr-share-main">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-xl-10">
+                    
+                    <!-- Welcome Section -->
+                    <div class="welcome-banner text-center mb-5">
+                        <div class="welcome-icon">
+                            <i class="fas fa-qrcode"></i>
+                        </div>
+                        <h1 class="welcome-title">Welcome to ComplainBox</h1>
+                        <p class="welcome-subtitle">Submit a complaint anonymously or login to manage complaints</p>
+                    </div>
+
+                    <!-- Two Column Layout -->
+                    <div class="row g-4">
+                        
+                        <!-- Left: Anonymous Complaint Submission -->
+                        <div class="col-lg-6">
+                            <div class="qr-card">
+                                <div class="qr-card-header">
+                                    <div class="qr-card-icon anonymous-icon">
+                                        <i class="fas fa-user-secret"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="qr-card-title">Submit Anonymous Complaint</h3>
+                                        <p class="qr-card-subtitle">No login required • 100% Anonymous</p>
+                                    </div>
+                                </div>
+
+                                <div class="qr-card-body">
+                                    <form id="anonymousComplaintForm">
+                                        <input type="hidden" id="resolverId" name="resolverId">
+                                        
+                                        <div class="mb-4">
+                                            <label class="form-label">
+                                                Complaint Title <span class="text-danger">*</span>
+                                            </label>
+                                            <input type="text" class="form-control form-control-lg" id="complaintTitle" placeholder="Brief description of the issue" required>
+                                        </div>
+
+                                        <div class="mb-4">
+                                            <label class="form-label">
+                                                Category <span class="text-danger">*</span>
+                                            </label>
+                                            <select class="form-select form-select-lg" id="complaintCategory" required>
+                                                <option value="">Select a category...</option>
+                                                <option value="facilities">Facilities & Infrastructure</option>
+                                                <option value="technology">Technology & IT</option>
+                                                <option value="health">Health & Safety</option>
+                                                <option value="security">Security</option>
+                                                <option value="academic">Academic</option>
+                                                <option value="administration">Administration</option>
+                                                <option value="harassment">Harassment/Bullying</option>
+                                                <option value="other">Other</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="mb-4">
+                                            <label class="form-label">
+                                                Priority Level <span class="text-danger">*</span>
+                                            </label>
+                                            <select class="form-select form-select-lg" id="complaintPriority" required>
+                                                <option value="">Select priority...</option>
+                                                <option value="low">Low - Can wait</option>
+                                                <option value="medium">Medium - Should be addressed soon</option>
+                                                <option value="high">High - Needs attention</option>
+                                                <option value="urgent">Urgent - Immediate action required</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="mb-4">
+                                            <label class="form-label">
+                                                Description <span class="text-danger">*</span>
+                                            </label>
+                                            <textarea class="form-control" id="complaintDescription" rows="5" placeholder="Provide detailed information about your complaint..." required></textarea>
+                                            <div class="form-text text-end">
+                                                <span id="charCount">0</span> / 1000 characters
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-4">
+                                            <label class="form-label">
+                                                Location (Optional)
+                                            </label>
+                                            <input type="text" class="form-control" id="complaintLocation" placeholder="e.g., Building A, Room 301">
+                                        </div>
+
+                                        <div class="mb-4">
+                                            <label class="form-label">
+                                                Attach Files (Optional)
+                                            </label>
+                                            <div class="file-upload-zone" id="fileUploadZone">
+                                                <input type="file" id="complaintFiles" multiple accept="image/*,.pdf,.doc,.docx" style="display: none;">
+                                                <div class="file-upload-content">
+                                                    <i class="fas fa-cloud-upload-alt"></i>
+                                                    <p>Click to upload or drag and drop</p>
+                                                    <small>Images, PDF, DOC (Max 5MB each)</small>
+                                                </div>
+                                            </div>
+                                            <div id="fileList" class="file-list mt-2"></div>
+                                        </div>
+
+                                        <div class="alert alert-info">
+                                            <i class="fas fa-shield-alt me-2"></i>
+                                            <strong>Your identity is protected.</strong> This complaint will be submitted anonymously. You'll receive a tracking ID to check the status.
+                                        </div>
+
+                                        <button type="submit" class="btn btn-primary btn-lg w-100">
+                                            <i class="fas fa-paper-plane me-2"></i>Submit Complaint
+                                        </button>
+                                    </form>
+
+                                    <!-- Success Message (Hidden by default) -->
+                                    <div id="successMessage" class="success-message" style="display: none;">
+                                        <div class="success-icon">
+                                            <i class="fas fa-check-circle"></i>
+                                        </div>
+                                        <h4>Complaint Submitted Successfully!</h4>
+                                        <p class="mb-3">Your tracking ID is:</p>
+                                        <div class="tracking-id-box">
+                                            <span id="trackingId">CMP-2024-XXX</span>
+                                            <button class="btn btn-sm btn-outline-primary ms-2" onclick="copyTrackingId()">
+                                                <i class="fas fa-copy"></i>
+                                            </button>
+                                        </div>
+                                        <p class="text-muted mt-3 small">
+                                            Save this tracking ID to check your complaint status later.
+                                        </p>
+                                        <button class="btn btn-outline-primary mt-3" onclick="submitAnother()">
+                                            <i class="fas fa-plus me-2"></i>Submit Another Complaint
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right: Resolver Login -->
+                        <div class="col-lg-6">
+                            <div class="qr-card">
+                                <div class="qr-card-header">
+                                    <div class="qr-card-icon resolver-icon">
+                                        <i class="fas fa-user-tie"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="qr-card-title">Resolver Login</h3>
+                                        <p class="qr-card-subtitle">Access your resolver dashboard</p>
+                                    </div>
+                                </div>
+
+                                <div class="qr-card-body">
+                                    <form id="resolverLoginForm">
+                                        <div class="mb-4">
+                                            <label class="form-label">
+                                                Email Address
+                                            </label>
+                                            <div class="input-group input-group-lg">
+                                                <span class="input-group-text">
+                                                    <i class="fas fa-envelope"></i>
+                                                </span>
+                                                <input type="email" class="form-control" id="loginEmail" placeholder="your.email@example.com" required>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-4">
+                                            <label class="form-label">
+                                                Password
+                                            </label>
+                                            <div class="input-group input-group-lg">
+                                                <span class="input-group-text">
+                                                    <i class="fas fa-lock"></i>
+                                                </span>
+                                                <input type="password" class="form-control" id="loginPassword" placeholder="Enter your password" required>
+                                                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-4 d-flex justify-content-between align-items-center">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="rememberMe">
+                                                <label class="form-check-label" for="rememberMe">
+                                                    Remember me
+                                                </label>
+                                            </div>
+                                            <a href="../../auth/login.html" class="text-primary small">
+                                                Forgot password?
+                                            </a>
+                                        </div>
+
+                                        <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">
+                                            <i class="fas fa-sign-in-alt me-2"></i>Login as Resolver
+                                        </button>
+
+                                        <div class="text-center">
+                                            <small class="text-muted">
+                                                Not a resolver? 
+                                                <a href="../../auth/registration.html" class="text-primary">Create Account</a>
+                                            </small>
+                                        </div>
+                                    </form>
+
+                                    <div class="divider">
+                                        <span>OR</span>
+                                    </div>
+
+                                    <div class="quick-links">
+                                        <a href="../../auth/login.html" class="quick-link-btn">
+                                            <i class="fas fa-user me-2"></i>
+                                            <div>
+                                                <strong>User Login</strong>
+                                                <small>Track your complaints</small>
+                                            </div>
+                                        </a>
+                                        <a href="../../public/index.html" class="quick-link-btn">
+                                            <i class="fas fa-home me-2"></i>
+                                            <div>
+                                                <strong>Go to Homepage</strong>
+                                                <small>Learn more about ComplainBox</small>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Info Cards -->
+                            <div class="info-cards mt-4">
+                                <div class="info-card">
+                                    <i class="fas fa-lock"></i>
+                                    <div>
+                                        <strong>100% Secure</strong>
+                                        <small>Your data is encrypted</small>
+                                    </div>
+                                </div>
+                                <div class="info-card">
+                                    <i class="fas fa-clock"></i>
+                                    <div>
+                                        <strong>Quick Response</strong>
+                                        <small>Average 2.5 hour resolution</small>
+                                    </div>
+                                </div>
+                                <div class="info-card">
+                                    <i class="fas fa-check-circle"></i>
+                                    <div>
+                                        <strong>92% Resolution Rate</strong>
+                                        <small>High success rate</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="qr-share-footer">
+        <div class="container">
+            <p>&copy; 2026 ComplainBox. All rights reserved. | <a href="../../public/index.html">Privacy Policy</a> | <a href="../../public/index.html">Terms of Service</a></p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+    <!-- Project JS -->
+    <script src="../../shared/js/config.js"></script>
+    <script src="../../shared/js/utils.js"></script>
+    <script src="../js/qr-share.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - ComplainBox</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet" />
+    
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" />
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+    
+    <!-- Project CSS -->
+    <link rel="stylesheet" href="../../shared/css/variables.css">
+    <link rel="stylesheet" href="../../shared/css/style.css">
+    <link rel="stylesheet" href="../../shared/css/utilities.css">
+    <link rel="stylesheet" href="../../shared/css/dashboard-common.css">
+    <link rel="stylesheet" href="../css/resolver-dashboard.css">
+</head>
+<body class="dashboard-page">
+
+    <!-- Sidebar -->
+    <aside class="dashboard-sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-brand">
+                <a href="../../public/index.html" class="text-decoration-none d-flex align-items-center">
+                    <div class="logo-circle-sidebar mx-2">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <span class="brand-text">ComplainBox</span>
+                </a>    
+            </div>
+            <button type="button" class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="sidebar-user">
+            <div class="user-avatar">
+                <i class="fas fa-user-tie"></i>
+            </div>
+            <div class="user-info">
+                <h6 class="user-name" id="resolverName">Sarah Johnson</h6>
+                <span class="user-role"><i class="fas fa-shield-alt me-1"></i>Resolver</span>
+            </div>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="complaints.html" class="nav-item">
+                <i class="fas fa-clipboard-list"></i>
+                <span>All Complaints</span>
+                <span class="badge-count" id="totalComplaints">0</span>
+            </a>
+            <a href="complaints.html?status=pending" class="nav-item">
+                <i class="fas fa-clock"></i>
+                <span>Pending</span>
+                <span class="badge-count badge-warning" id="pendingCount">0</span>
+            </a>
+            <a href="complaints.html?status=in-progress" class="nav-item">
+                <i class="fas fa-spinner"></i>
+                <span>In Progress</span>
+                <span class="badge-count badge-info" id="inProgressCount">0</span>
+            </a>
+            <a href="complaints.html?status=resolved" class="nav-item">
+                <i class="fas fa-check-circle"></i>
+                <span>Resolved</span>
+                <span class="badge-count badge-success" id="resolvedCount">0</span>
+            </a>
+            <a href="complaints.html?status=spam" class="nav-item">
+                <i class="fas fa-ban"></i>
+                <span>Spam</span>
+                <span class="badge-count badge-danger" id="spamCount">0</span>
+            </a>
+            <div class="sidebar-divider"></div>
+            <a href="settings.html" class="nav-item active">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <a href="../../auth/login.html" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+        <!-- Top Navbar -->
+        <nav class="dashboard-navbar">
+            <div class="navbar-left">
+                <button class="mobile-toggle" id="mobileToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h4 class="page-title">Settings</h4>
+            </div>
+            
+            <div class="navbar-right">
+                <div class="navbar-actions">
+                    <!-- Notification Dropdown -->
+                    <div class="dropdown">
+                        <button type="button" class="action-btn" id="notificationBtn" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-badge" id="notificationCount">3</span>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end notification-dropdown" aria-labelledby="notificationBtn">
+                            <div class="notification-header">
+                                <h6 class="mb-0">Notifications</h6>
+                                <button class="btn btn-link btn-sm text-primary p-0" onclick="markAllAsRead()">Mark all as read</button>
+                            </div>
+                            <div class="notification-list" id="notificationList">
+                                <!-- Notifications will be loaded here -->
+                            </div>
+                            <div class="notification-footer">
+                                <a href="#" class="text-center d-block">View All Notifications</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- User Avatar Dropdown -->
+                    <div class="dropdown">
+                        <button type="button" class="user-profile-btn" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="user-avatar-small">
+                                <i class="fas fa-user-tie"></i>
+                            </div>
+                            <i class="fas fa-chevron-down ms-1"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li class="dropdown-header">
+                                <div class="d-flex align-items-center">
+                                    <div class="user-avatar-small me-2">
+                                        <i class="fas fa-user-tie"></i>
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold" id="dropdownUserName">Sarah Johnson</div>
+                                        <small class="text-muted">Resolver</small>
+                                    </div>
+                                </div>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="settings.html"><i class="fas fa-user me-2"></i>Profile</a></li>
+                            <li><a class="dropdown-item" href="settings.html"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="../../auth/login.html"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Dashboard Content -->
+        <div class="dashboard-content">
+            <div class="container-fluid">
+                
+                <div class="row">
+                    <!-- Settings Navigation -->
+                    <div class="col-lg-3">
+                        <div class="content-card mb-4">
+                            <div class="settings-nav">
+                                <a href="#profile" class="settings-nav-item active" data-section="profile">
+                                    <i class="fas fa-user me-2"></i>Profile
+                                </a>
+                                <a href="#security" class="settings-nav-item" data-section="security">
+                                    <i class="fas fa-lock me-2"></i>Security
+                                </a>
+                                <a href="#notifications" class="settings-nav-item" data-section="notifications">
+                                    <i class="fas fa-bell me-2"></i>Notifications
+                                </a>
+                                <a href="#performance" class="settings-nav-item" data-section="performance">
+                                    <i class="fas fa-chart-line me-2"></i>Performance
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Settings Content -->
+                    <div class="col-lg-9">
+                        
+                        <!-- Profile Section -->
+                        <div class="settings-section" id="profile-section">
+                            <div class="content-card mb-4">
+                                <div class="card-header-custom">
+                                    <h5 class="card-title">
+                                        <i class="fas fa-user me-2"></i>Profile Information
+                                    </h5>
+                                </div>
+                                <div class="card-body-custom">
+                                    <form id="profileForm">
+                                        <div class="row g-3">
+                                            <div class="col-md-12 text-center mb-3">
+                                                <div class="profile-avatar-large">
+                                                    <i class="fas fa-user-tie"></i>
+                                                </div>
+                                                <button type="button" class="btn btn-sm btn-outline-primary mt-3">
+                                                    <i class="fas fa-camera me-2"></i>Change Avatar
+                                                </button>
+                                            </div>
+                                            
+                                            <div class="col-md-6">
+                                                <label class="form-label">Full Name</label>
+                                                <input type="text" class="form-control" id="fullName" value="Sarah Johnson">
+                                            </div>
+                                            
+                                            <div class="col-md-6">
+                                                <label class="form-label">Email Address</label>
+                                                <input type="email" class="form-control" id="email" value="sarah.johnson@example.com">
+                                            </div>
+                                            
+                                            <div class="col-md-6">
+                                                <label class="form-label">Phone Number</label>
+                                                <input type="tel" class="form-control" id="phone" value="+1 234 567 8900">
+                                            </div>
+                                            
+                                            <div class="col-md-6">
+                                                <label class="form-label">Resolver ID</label>
+                                                <input type="text" class="form-control" value="RES-001" disabled>
+                                            </div>
+                                            
+                                            <div class="col-md-12">
+                                                <label class="form-label">Bio</label>
+                                                <textarea class="form-control" id="bio" rows="3" placeholder="Tell us about yourself...">Experienced resolver specializing in facilities and technical issues.</textarea>
+                                            </div>
+                                            
+                                            <div class="col-12">
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="fas fa-save me-2"></i>Save Changes
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Security Section -->
+                        <div class="settings-section" id="security-section" style="display: none;">
+                            <div class="content-card mb-4">
+                                <div class="card-header-custom">
+                                    <h5 class="card-title">
+                                        <i class="fas fa-lock me-2"></i>Change Password
+                                    </h5>
+                                </div>
+                                <div class="card-body-custom">
+                                    <form id="passwordForm">
+                                        <div class="row g-3">
+                                            <div class="col-md-12">
+                                                <label class="form-label">Current Password</label>
+                                                <input type="password" class="form-control" id="currentPassword" placeholder="Enter current password">
+                                            </div>
+                                            
+                                            <div class="col-md-6">
+                                                <label class="form-label">New Password</label>
+                                                <input type="password" class="form-control" id="newPassword" placeholder="Enter new password">
+                                            </div>
+                                            
+                                            <div class="col-md-6">
+                                                <label class="form-label">Confirm New Password</label>
+                                                <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm new password">
+                                            </div>
+                                            
+                                            <div class="col-12">
+                                                <div class="alert alert-info">
+                                                    <i class="fas fa-info-circle me-2"></i>
+                                                    <small>Password must be at least 8 characters long and contain uppercase, lowercase, numbers, and special characters.</small>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-12">
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="fas fa-key me-2"></i>Update Password
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <div class="content-card">
+                                <div class="card-header-custom">
+                                    <h5 class="card-title">
+                                        <i class="fas fa-shield-alt me-2"></i>Two-Factor Authentication
+                                    </h5>
+                                </div>
+                                <div class="card-body-custom">
+                                    <p class="text-muted">Add an extra layer of security to your account</p>
+                                    <button class="btn btn-outline-primary">
+                                        <i class="fas fa-mobile-alt me-2"></i>Enable 2FA
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Notifications Section -->
+                        <div class="settings-section" id="notifications-section" style="display: none;">
+                            <div class="content-card">
+                                <div class="card-header-custom">
+                                    <h5 class="card-title">
+                                        <i class="fas fa-bell me-2"></i>Notification Preferences
+                                    </h5>
+                                </div>
+                                <div class="card-body-custom">
+                                    <form id="notificationsForm">
+                                        <div class="notification-item">
+                                            <div>
+                                                <h6>Email Notifications</h6>
+                                                <p class="text-muted small mb-0">Receive email alerts for new complaints</p>
+                                            </div>
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="emailNotif" checked>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="notification-item">
+                                            <div>
+                                                <h6>New Complaint Assignment</h6>
+                                                <p class="text-muted small mb-0">Get notified when a complaint is assigned to you</p>
+                                            </div>
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="assignmentNotif" checked>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="notification-item">
+                                            <div>
+                                                <h6>Status Updates</h6>
+                                                <p class="text-muted small mb-0">Notifications for complaint status changes</p>
+                                            </div>
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="statusNotif" checked>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="notification-item">
+                                            <div>
+                                                <h6>Urgent Priority Alerts</h6>
+                                                <p class="text-muted small mb-0">Immediate alerts for urgent complaints</p>
+                                            </div>
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="urgentNotif" checked>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="notification-item">
+                                            <div>
+                                                <h6>Weekly Summary</h6>
+                                                <p class="text-muted small mb-0">Receive weekly performance summary</p>
+                                            </div>
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="weeklyNotif">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mt-4">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fas fa-save me-2"></i>Save Preferences
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Performance Section -->
+                        <div class="settings-section" id="performance-section" style="display: none;">
+                            <div class="content-card mb-4">
+                                <div class="card-header-custom">
+                                    <h5 class="card-title">
+                                        <i class="fas fa-chart-line me-2"></i>Performance Statistics
+                                    </h5>
+                                </div>
+                                <div class="card-body-custom">
+                                    <div class="row g-4">
+                                        <div class="col-md-6">
+                                            <div class="performance-stat">
+                                                <div class="performance-icon">
+                                                    <i class="fas fa-check-circle"></i>
+                                                </div>
+                                                <div>
+                                                    <h3>25</h3>
+                                                    <p>Complaints Resolved</p>
+                                                    <small class="text-success"><i class="fas fa-arrow-up"></i> 18% from last month</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-6">
+                                            <div class="performance-stat">
+                                                <div class="performance-icon bg-warning">
+                                                    <i class="fas fa-clock"></i>
+                                                </div>
+                                                <div>
+                                                    <h3>2.5 hrs</h3>
+                                                    <p>Avg. Resolution Time</p>
+                                                    <small class="text-success"><i class="fas fa-arrow-down"></i> 15% faster</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-6">
+                                            <div class="performance-stat">
+                                                <div class="performance-icon bg-info">
+                                                    <i class="fas fa-star"></i>
+                                                </div>
+                                                <div>
+                                                    <h3>92%</h3>
+                                                    <p>Resolution Rate</p>
+                                                    <small class="text-success"><i class="fas fa-arrow-up"></i> 4% improvement</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-6">
+                                            <div class="performance-stat">
+                                                <div class="performance-icon bg-danger">
+                                                    <i class="fas fa-ban"></i>
+                                                </div>
+                                                <div>
+                                                    <h3>3</h3>
+                                                    <p>Marked as Spam</p>
+                                                    <small class="text-muted">This month</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="content-card">
+                                <div class="card-header-custom">
+                                    <h5 class="card-title">
+                                        <i class="fas fa-trophy me-2"></i>Achievements
+                                    </h5>
+                                </div>
+                                <div class="card-body-custom">
+                                    <div class="row g-3">
+                                        <div class="col-md-4">
+                                            <div class="achievement-badge earned">
+                                                <i class="fas fa-medal"></i>
+                                                <h6>Quick Resolver</h6>
+                                                <small>Resolved 10+ complaints</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="achievement-badge earned">
+                                                <i class="fas fa-fire"></i>
+                                                <h6>On Fire</h6>
+                                                <small>7-day resolution streak</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="achievement-badge">
+                                                <i class="fas fa-crown"></i>
+                                                <h6>Top Resolver</h6>
+                                                <small>Resolve 50 complaints</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+    <!-- Project JS -->
+    <script src="../../shared/js/config.js"></script>
+    <script src="../../shared/js/utils.js"></script>
+    <script src="../../shared/js/dashboard-common.js"></script>
+    <script src="../js/settings.js"></script>
+
+</body>
+</html>
