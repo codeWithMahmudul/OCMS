@@ -336,6 +336,67 @@ function generateId(prefix = 'id') {
     return `${prefix}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 }
 
+// === HTML Escape ===
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// === Format Relative Time ===
+function formatRelativeTime(date) {
+    return timeAgo(date);
+}
+
+// === Capitalize First Letter ===
+function capitalizeFirst(str) {
+    if (!str) return '';
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
+
+// === API Request Helper ===
+async function apiRequest(endpoint, method = 'GET', data = null) {
+    const options = {
+        method: method,
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    };
+
+    // Add auth token if available
+    const token = getAuthToken();
+    if (token) {
+        options.headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    // Add body for POST, PUT, PATCH
+    if (data && ['POST', 'PUT', 'PATCH'].includes(method)) {
+        options.body = JSON.stringify(data);
+    }
+
+    // Add query params for GET
+    let url = `${CONFIG.API_BASE_URL}${endpoint}`;
+    if (method === 'GET' && data) {
+        const params = new URLSearchParams(data);
+        url += `?${params.toString()}`;
+    }
+
+    try {
+        const response = await fetch(url, options);
+        const result = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(result.message || 'API request failed');
+        }
+        
+        return result;
+    } catch (error) {
+        console.error('API Request Error:', error);
+        throw error;
+    }
+}
+
 // === Export for use ===
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
@@ -374,6 +435,10 @@ if (typeof module !== 'undefined' && module.exports) {
         getStatusBadge,
         getPriorityBadge,
         confirmDialog,
-        generateId
+        generateId,
+        escapeHtml,
+        formatRelativeTime,
+        capitalizeFirst,
+        apiRequest
     };
 }

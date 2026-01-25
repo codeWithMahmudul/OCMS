@@ -52,22 +52,11 @@
                     <i class="fas fa-credit-card"></i>
                     <span>Billing & Plans</span>
                 </a>
-                <a href="logs.html" class="nav-item">
-                    <i class="fas fa-list-alt"></i>
-                    <span>System Logs</span>
-                </a>
                 <a href="system-settings.html" class="nav-item active">
                     <i class="fas fa-cog"></i>
                     <span>System Settings</span>
                 </a>
             </nav>
-            
-            <div class="sidebar-footer">
-                <button type="button" class="btn-logout" onclick="handleLogout()">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span>Logout</span>
-                </button>
-            </div>
         </aside>
 
         <!-- Main Content -->
@@ -78,15 +67,13 @@
                     <button type="button" class="sidebar-toggle mobile-toggle" id="mobileSidebarToggle">
                         <i class="fas fa-bars"></i>
                     </button>
-                    <h1 class="page-title">System Settings</h1>
-                </div>
-                
-                <div class="navbar-right">
                     <div class="search-box">
                         <i class="fas fa-search"></i>
                         <input type="text" placeholder="Search settings..." id="globalSearch">
                     </div>
-                    
+                </div>
+                
+                <div class="navbar-right">
                     <div class="dropdown notification-dropdown">
                         <button type="button" class="icon-btn" id="notificationDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
                             <i class="fas fa-bell"></i>
@@ -99,7 +86,7 @@
                             </div>
                             <div class="notification-list" id="notificationList"></div>
                             <div class="notification-footer">
-                                <a href="logs.html" class="btn-link">View all notifications</a>
+                                <a href="#" class="btn-link">View all notifications</a>
                             </div>
                         </div>
                     </div>
@@ -139,7 +126,15 @@
             </nav>
 
             <!-- Content Area -->
-            <div class="content-area">
+            <div class="dashboard-content">
+                <!-- Page Header -->
+                <div class="page-header mb-4">
+                    <div>
+                        <h1 class="page-title">System Settings</h1>
+                        <p class="page-description">Configure platform-wide settings and preferences</p>
+                    </div>
+                </div>
+
                 <!-- Settings Navigation Tabs -->
                 <ul class="nav nav-tabs mb-4" id="settingsTabs" role="tablist">
                     <li class="nav-item" role="presentation">

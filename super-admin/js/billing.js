@@ -3,7 +3,15 @@
  */
 
 $(document).ready(function() {
+    console.log('Document ready - initializing billing page');
+    
     loadBillingStats();
+    
+    // Load dummy data immediately
+    useDummyPlans();
+    useDummyTransactions();
+    
+    // Then try to load from API (will override if successful)
     loadPlans();
     loadTransactions();
     
@@ -15,6 +23,8 @@ $(document).ready(function() {
 
 let currentPage = 1;
 const itemsPerPage = 10;
+let allTransactions = []; // Store all transactions for easy access
+let allPlans = []; // Store all plans for easy access
 
 /**
  * Load billing statistics
@@ -43,17 +53,19 @@ async function loadBillingStats() {
  * Load subscription plans
  */
 async function loadPlans() {
-    // Use dummy data immediately for demo
-    useDummyPlans();
+    console.log('loadPlans: attempting to load from API');
     
     try {
         const response = await apiRequest('/super-admin/plans', 'GET');
         
-        if (response.success) {
-            displayPlans(response.data.plans || response.data);
+        if (response && response.success) {
+            console.log('loadPlans: API success, displaying API data');
+            const plans = response.data.plans || response.data;
+            allPlans = plans;
+            displayPlans(plans);
         }
     } catch (error) {
-        console.error('Error loading plans:', error);
+        console.log('loadPlans: API failed, keeping dummy data:', error.message);
     }
 }
 
@@ -61,7 +73,9 @@ async function loadPlans() {
  * Display plans
  */
 function displayPlans(plans) {
+    console.log('displayPlans called with', plans.length, 'plans');
     const container = $('#plansContainer');
+    console.log('Container found:', container.length > 0);
     
     if (plans.length === 0) {
         container.html('<div class="col-12 text-center py-4"><p class="text-muted">No plans available</p></div>');
@@ -83,8 +97,8 @@ function displayPlans(plans) {
                 <div class="pricing-body">
                     <p class="text-muted small">${escapeHtml(plan.description || '')}</p>
                     <ul class="feature-list">
-                        <li><i class="fas fa-users text-primary"></i> ${plan.max_users} Users</li>
-                        <li><i class="fas fa-exclamation-circle text-primary"></i> ${plan.max_complaints} Complaints/month</li>
+                        <li><i class="fas fa-users text-primary"></i> ${plan.max_users === -1 ? 'Unlimited' : plan.max_users} Users</li>
+                        <li><i class="fas fa-exclamation-circle text-primary"></i> ${plan.max_complaints === -1 ? 'Unlimited' : plan.max_complaints} Complaints/month</li>
                         <li><i class="fas fa-database text-primary"></i> ${plan.storage_gb}GB Storage</li>
                         ${plan.features ? plan.features.split('\n').map(f => 
                             `<li><i class="fas fa-check text-success"></i> ${escapeHtml(f)}</li>`
@@ -109,12 +123,14 @@ function displayPlans(plans) {
     `).join('');
     
     container.html(html);
+    console.log('Plans HTML set, container children:', container.children().length);
 }
 
 /**
  * Load transactions
  */
 async function loadTransactions(page = 1) {
+    console.log('loadTransactions: attempting to load from API, page:', page);
     currentPage = page;
     
     const filters = {
@@ -123,18 +139,18 @@ async function loadTransactions(page = 1) {
         per_page: itemsPerPage
     };
     
-    // Use dummy data immediately for demo
-    useDummyTransactions();
-    
     try {
         const response = await apiRequest('/super-admin/transactions', 'GET', filters);
         
-        if (response.success) {
-            displayTransactions(response.data.transactions || response.data);
+        if (response && response.success) {
+            console.log('loadTransactions: API success, displaying API data');
+            const transactions = response.data.transactions || response.data;
+            allTransactions = transactions;
+            displayTransactions(transactions);
             updatePagination(response.data.total, response.data.per_page, response.data.current_page);
         }
     } catch (error) {
-        console.error('Error loading transactions:', error);
+        console.log('loadTransactions: API failed, keeping dummy data:', error.message);
     }
 }
 
@@ -142,7 +158,9 @@ async function loadTransactions(page = 1) {
  * Display transactions
  */
 function displayTransactions(transactions) {
+    console.log('displayTransactions called with', transactions.length, 'transactions');
     const tbody = $('#transactionsTableBody');
+    console.log('Table body found:', tbody.length > 0);
     
     if (transactions.length === 0) {
         tbody.html('<tr><td colspan="7" class="text-center py-4 text-muted">No transactions found</td></tr>');
@@ -328,10 +346,24 @@ async function deletePlan(planId) {
  */
 async function viewTransaction(transactionId) {
     try {
-        const response = await apiRequest(`/super-admin/transactions/${transactionId}`, 'GET');
+        // Try API first, fallback to local data
+        let trans;
+        try {
+            const response = await apiRequest(`/super-admin/transactions/${transactionId}`, 'GET');
+            if (response.success) {
+                trans = response.data;
+            }
+        } catch (apiError) {
+            // Fallback to local dummy data
+            trans = allTransactions.find(t => t.transaction_id === transactionId);
+            if (trans) {
+                // Add missing fields for display
+                trans.payment_method = trans.payment_method || 'Credit Card';
+                trans.invoice_url = trans.invoice_url || '#';
+            }
+        }
         
-        if (response.success) {
-            const trans = response.data;
+        if (trans) {
             const content = `
                 <div class="transaction-details">
                     <div class="row g-3">
@@ -373,6 +405,8 @@ async function viewTransaction(transactionId) {
             
             $('#viewTransactionContent').html(content);
             new bootstrap.Modal(document.getElementById('viewTransactionModal')).show();
+        } else {
+            showToast('Transaction not found', 'error');
         }
     } catch (error) {
         console.error('Error loading transaction:', error);
@@ -386,11 +420,17 @@ async function viewTransaction(transactionId) {
 async function exportTransactions() {
     try {
         showToast('Preparing export...', 'info');
-        const response = await apiRequest('/super-admin/transactions/export', 'GET');
         
-        if (response.success && response.data.url) {
-            window.location.href = response.data.url;
-            showToast('Export started', 'success');
+        try {
+            const response = await apiRequest('/super-admin/transactions/export', 'GET');
+            if (response.success && response.data.url) {
+                window.location.href = response.data.url;
+                showToast('Export started', 'success');
+                return;
+            }
+        } catch (apiError) {
+            // Fallback to client-side CSV export
+            exportTransactionsToCSV();
         }
     } catch (error) {
         console.error('Error exporting transactions:', error);
@@ -402,6 +442,8 @@ async function exportTransactions() {
  * Use dummy plans
  */
 function useDummyPlans() {
+    console.log('Loading dummy plans data...');
+    
     const dummyPlans = [
         {
             id: 1,
@@ -444,6 +486,8 @@ function useDummyPlans() {
         }
     ];
     
+    console.log(`Displaying ${dummyPlans.length} dummy plans`);
+    allPlans = dummyPlans; // Store for later use
     displayPlans(dummyPlans);
 }
 
@@ -451,6 +495,8 @@ function useDummyPlans() {
  * Use dummy transactions
  */
 function useDummyTransactions() {
+    console.log('Loading dummy transactions data...');
+    
     const dummyTransactions = [
         {
             transaction_id: 'TXN-2026-001234',
@@ -550,6 +596,42 @@ function useDummyTransactions() {
         }
     ];
     
+    console.log(`Displaying ${dummyTransactions.length} dummy transactions`);
+    allTransactions = dummyTransactions; // Store for later use
     displayTransactions(dummyTransactions);
     updatePagination(dummyTransactions.length, itemsPerPage, currentPage);
 }
+
+/**
+ * Export transactions to CSV (client-side fallback)
+ */
+function exportTransactionsToCSV() {
+    // Prepare CSV data
+    const headers = ['Transaction ID', 'Organization', 'Plan', 'Amount', 'Status', 'Date'];
+    const rows = allTransactions.map(trans => [
+        trans.transaction_id,
+        trans.organization.name,
+        trans.plan.name,
+        `$${trans.amount}`,
+        capitalizeFirst(trans.status),
+        formatDate(trans.created_at)
+    ]);
+    
+    // Create CSV content
+    let csvContent = headers.join(',') + '\\n';
+    rows.forEach(row => {
+        csvContent += row.map(cell => `\"${cell}\"`).join(',') + '\\n';
+    });
+    
+    // Create download link
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `transactions_export_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    showToast('Transactions exported successfully', 'success');

@@ -52,22 +52,11 @@
                     <i class="fas fa-credit-card"></i>
                     <span>Billing & Plans</span>
                 </a>
-                <a href="logs.html" class="nav-item">
-                    <i class="fas fa-list-alt"></i>
-                    <span>System Logs</span>
-                </a>
                 <a href="system-settings.html" class="nav-item">
                     <i class="fas fa-cog"></i>
                     <span>System Settings</span>
                 </a>
             </nav>
-            
-            <div class="sidebar-footer">
-                <button type="button" class="btn-logout" onclick="handleLogout()">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span>Logout</span>
-                </button>
-            </div>
         </aside>
 
         <!-- Main Content -->
@@ -78,16 +67,13 @@
                     <button type="button" class="sidebar-toggle mobile-toggle" id="mobileSidebarToggle">
                         <i class="fas fa-bars"></i>
                     </button>
-                    <h1 class="page-title">All Users</h1>
-                </div>
-                
-                <div class="navbar-right">
-                    <!-- Search -->
                     <div class="search-box">
                         <i class="fas fa-search"></i>
                         <input type="text" placeholder="Search users..." id="globalSearch">
                     </div>
-                    
+                </div>
+                
+                <div class="navbar-right">
                     <!-- Notifications -->
                     <div class="dropdown notification-dropdown">
                         <button type="button" class="icon-btn" id="notificationDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
@@ -107,7 +93,7 @@
                                 </div>
                             </div>
                             <div class="notification-footer">
-                                <a href="logs.html" class="btn-link">View all notifications</a>
+                                <a href="#" class="btn-link">View all notifications</a>
                             </div>
                         </div>
                     </div>
@@ -148,7 +134,15 @@
             </nav>
 
             <!-- Content Area -->
-            <div class="content-area">
+            <div class="dashboard-content">
+                <!-- Page Header -->
+                <div class="page-header mb-4">
+                    <div>
+                        <h1 class="page-title">All Users</h1>
+                        <p class="page-description">Manage and monitor all users across the platform</p>
+                    </div>
+                </div>
+
                 <!-- Stats Cards -->
                 <div class="row g-3 mb-4">
                     <div class="col-xl-3 col-md-6">
@@ -279,7 +273,7 @@
 
                         <!-- Pagination -->
                         <div class="d-flex justify-content-between align-items-center mt-3">
-                            <div class="text-muted small" id="paginationInfo">Showing 0 of 0 users</div>
+                            <div class="small" style="color: #4b5563;" id="paginationInfo">Showing 0 of 0 users</div>
                             <nav>
                                 <ul class="pagination pagination-sm mb-0" id="pagination"></ul>
                             </nav>
@@ -301,15 +295,15 @@
                 <div class="modal-body">
                     <form id="addUserForm">
                         <div class="mb-3">
-                            <label class="form-label">Full Name *</label>
+                            <label class="form-label fw-medium" style="color: #1f2937;">Full Name *</label>
                             <input type="text" class="form-control" name="name" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Email *</label>
+                            <label class="form-label fw-medium" style="color: #1f2937;">Email *</label>
                             <input type="email" class="form-control" name="email" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Role *</label>
+                            <label class="form-label fw-medium" style="color: #1f2937;">Role *</label>
                             <select class="form-select" name="role" required>
                                 <option value="">Select Role</option>
                                 <option value="org_admin">Organization Admin</option>
@@ -318,13 +312,13 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Organization</label>
+                            <label class="form-label fw-medium" style="color: #1f2937;">Organization</label>
                             <select class="form-select" name="organization_id" id="addUserOrgSelect">
                                 <option value="">Select Organization</option>
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Password *</label>
+                            <label class="form-label fw-medium" style="color: #1f2937;">Password *</label>
                             <input type="password" class="form-control" name="password" required>
                         </div>
                     </form>
@@ -367,15 +361,15 @@
                     <form id="editUserForm">
                         <input type="hidden" name="user_id" id="editUserId">
                         <div class="mb-3">
-                            <label class="form-label">Full Name *</label>
+                            <label class="form-label fw-medium" style="color: #1f2937;">Full Name *</label>
                             <input type="text" class="form-control" name="name" id="editUserName" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Email *</label>
+                            <label class="form-label fw-medium" style="color: #1f2937;">Email *</label>
                             <input type="email" class="form-control" name="email" id="editUserEmail" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Role *</label>
+                            <label class="form-label fw-medium" style="color: #1f2937;">Role *</label>
                             <select class="form-select" name="role" id="editUserRole" required>
                                 <option value="org_admin">Organization Admin</option>
                                 <option value="resolver">Resolver</option>
@@ -383,7 +377,7 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Organization</label>
+                            <label class="form-label fw-medium" style="color: #1f2937;">Organization</label>
                             <select class="form-select" name="organization_id" id="editUserOrg">
                                 <option value="">Select Organization</option>
                             </select>

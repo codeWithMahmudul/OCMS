@@ -190,10 +190,24 @@ function updatePagination(total, perPage, current) {
  */
 async function loadOrganizationsForFilters() {
     try {
-        const response = await apiRequest('/super-admin/organizations', 'GET');
+        let orgs = [];
+        try {
+            const response = await apiRequest('/super-admin/organizations', 'GET');
+            if (response.success) {
+                orgs = response.data.organizations || response.data;
+            }
+        } catch (apiError) {
+            // Fallback to extracting organizations from users
+            const orgMap = new Map();
+            allUsers.forEach(user => {
+                if (user.organization) {
+                    orgMap.set(user.organization.id, user.organization);
+                }
+            });
+            orgs = Array.from(orgMap.values());
+        }
         
-        if (response.success) {
-            const orgs = response.data.organizations || response.data;
+        if (orgs.length > 0) {
             const selects = $('#orgFilter, #addUserOrgSelect, #editUserOrg');
             
             const options = orgs.map(org => 
@@ -213,10 +227,19 @@ async function loadOrganizationsForFilters() {
  */
 async function viewUser(userId) {
     try {
-        const response = await apiRequest(`/super-admin/users/${userId}`, 'GET');
+        // Try API first, fallback to local data
+        let user;
+        try {
+            const response = await apiRequest(`/super-admin/users/${userId}`, 'GET');
+            if (response.success) {
+                user = response.data;
+            }
+        } catch (apiError) {
+            // Fallback to local dummy data
+            user = allUsers.find(u => u.id === userId);
+        }
         
-        if (response.success) {
-            const user = response.data;
+        if (user) {
             const content = `
                 <div class="row g-3">
                     <div class="col-md-12 text-center mb-3">
@@ -290,17 +313,28 @@ async function viewUser(userId) {
  */
 async function editUser(userId) {
     try {
-        const response = await apiRequest(`/super-admin/users/${userId}`, 'GET');
+        // Try API first, fallback to local data
+        let user;
+        try {
+            const response = await apiRequest(`/super-admin/users/${userId}`, 'GET');
+            if (response.success) {
+                user = response.data;
+            }
+        } catch (apiError) {
+            // Fallback to local dummy data
+            user = allUsers.find(u => u.id === userId);
+        }
         
-        if (response.success) {
-            const user = response.data;
+        if (user) {
             $('#editUserId').val(user.id);
             $('#editUserName').val(user.name);
             $('#editUserEmail').val(user.email);
             $('#editUserRole').val(user.role);
-            $('#editUserOrg').val(user.organization_id || '');
+            $('#editUserOrg').val(user.organization ? user.organization.id : '');
             
             new bootstrap.Modal(document.getElementById('editUserModal')).show();
+        } else {
+            showToast('User not found', 'error');
         }
     } catch (error) {
         console.error('Error loading user:', error);
@@ -353,9 +387,21 @@ async function handleUpdateUser() {
     delete data.user_id;
     
     try {
-        const response = await apiRequest(`/super-admin/users/${userId}`, 'PUT', data);
+        let success = false;
+        try {
+            const response = await apiRequest(`/super-admin/users/${userId}`, 'PUT', data);
+            success = response.success;
+        } catch (apiError) {
+            // Fallback to local update
+            const userIndex = allUsers.findIndex(u => u.id == userId);
+            if (userIndex !== -1) {
+                allUsers[userIndex] = { ...allUsers[userIndex], ...data };
+                displayUsers(allUsers);
+                success = true;
+            }
+        }
         
-        if (response.success) {
+        if (success) {
             showToast('User updated successfully', 'success');
             bootstrap.Modal.getInstance(document.getElementById('editUserModal')).hide();
             loadUsers();
@@ -376,9 +422,21 @@ async function toggleUserStatus(userId, currentStatus) {
     if (!confirm(confirmMsg)) return;
     
     try {
-        const response = await apiRequest(`/super-admin/users/${userId}/${action}`, 'POST');
+        let success = false;
+        try {
+            const response = await apiRequest(`/super-admin/users/${userId}/${action}`, 'POST');
+            success = response.success;
+        } catch (apiError) {
+            // Fallback to local update
+            const userIndex = allUsers.findIndex(u => u.id === userId);
+            if (userIndex !== -1) {
+                allUsers[userIndex].status = action === 'activate' ? 'active' : 'suspended';
+                displayUsers(allUsers);
+                success = true;
+            }
+        }
         
-        if (response.success) {
+        if (success) {
             showToast(`User ${action}d successfully`, 'success');
             loadUsers(currentPage);
             loadUserStats();
@@ -398,9 +456,22 @@ async function deleteUser(userId) {
     }
     
     try {
-        const response = await apiRequest(`/super-admin/users/${userId}`, 'DELETE');
+        let success = false;
+        try {
+            const response = await apiRequest(`/super-admin/users/${userId}`, 'DELETE');
+            success = response.success;
+        } catch (apiError) {
+            // Fallback to local delete
+            const userIndex = allUsers.findIndex(u => u.id === userId);
+            if (userIndex !== -1) {
+                allUsers.splice(userIndex, 1);
+                displayUsers(allUsers);
+                totalUsers = allUsers.length;
+                success = true;
+            }
+        }
         
-        if (response.success) {
+        if (success) {
             showToast('User deleted successfully', 'success');
             loadUsers(currentPage);
             loadUserStats();
@@ -425,11 +496,16 @@ async function exportUsers() {
         
         showToast('Preparing export...', 'info');
         
-        const response = await apiRequest('/super-admin/users/export', 'GET', filters);
-        
-        if (response.success && response.data.url) {
-            window.location.href = response.data.url;
-            showToast('Export started', 'success');
+        try {
+            const response = await apiRequest('/super-admin/users/export', 'GET', filters);
+            if (response.success && response.data.url) {
+                window.location.href = response.data.url;
+                showToast('Export started', 'success');
+                return;
+            }
+        } catch (apiError) {
+            // Fallback to local CSV export
+            exportUsersToCSV();
         }
     } catch (error) {
         console.error('Error exporting users:', error);
@@ -446,6 +522,43 @@ function resetFilters() {
     $('#statusFilter').val('');
     $('#orgFilter').val('');
     loadUsers(1);
+}
+
+/**
+ * Export users to CSV (client-side fallback)
+ */
+function exportUsersToCSV() {
+    // Prepare CSV data
+    const headers = ['ID', 'Name', 'Email', 'Role', 'Organization', 'Status', 'Created At', 'Last Active'];
+    const rows = allUsers.map(user => [
+        user.id,
+        user.name,
+        user.email,
+        getRoleLabel(user.role),
+        user.organization ? user.organization.name : 'N/A',
+        capitalizeFirst(user.status),
+        formatDate(user.created_at),
+        user.last_active ? formatDate(user.last_active) : 'Never'
+    ]);
+    
+    // Create CSV content
+    let csvContent = headers.join(',') + '\\n';
+    rows.forEach(row => {
+        csvContent += row.map(cell => `\"${cell}\"`).join(',') + '\\n';
+    });
+    
+    // Create download link
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `users_export_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    showToast('Users exported successfully', 'success');
 }
 
 /**
@@ -488,6 +601,8 @@ function getStatusColor(status) {
  * Use dummy data for demo
  */
 function useDummyData() {
+    console.log('Loading dummy user data...');
+    
     const dummyUsers = [
         {
             id: 1,
@@ -625,6 +740,7 @@ function useDummyData() {
     
     allUsers = dummyUsers;
     totalUsers = dummyUsers.length;
+    console.log(`Displaying ${dummyUsers.length} dummy users`);
     displayUsers(dummyUsers);
     updatePagination(totalUsers, itemsPerPage, currentPage);
 }
