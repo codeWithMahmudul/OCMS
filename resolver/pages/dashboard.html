@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resolver Dashboard - ComplainBox</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet" />
+    
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" />
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+    
+    <!-- Project CSS -->
+    <link rel="stylesheet" href="../../shared/css/variables.css">
+    <link rel="stylesheet" href="../../shared/css/style.css">
+    <link rel="stylesheet" href="../../shared/css/utilities.css">
+    <link rel="stylesheet" href="../../shared/css/dashboard-common.css">
+    <link rel="stylesheet" href="../css/resolver-dashboard.css">
+</head>
+<body class="dashboard-page">
+
+    <!-- Sidebar -->
+    <aside class="dashboard-sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-brand">
+                <a href="../../public/index.html" class="text-decoration-none d-flex align-items-center">
+                    <div class="logo-circle-sidebar mx-2">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <span class="brand-text">ComplainBox</span>
+                </a>    
+            </div>
+            <button type="button" class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="sidebar-user">
+            <div class="user-avatar">
+                <i class="fas fa-user-tie"></i>
+            </div>
+            <div class="user-info">
+                <h6 class="user-name" id="resolverName">Sarah Johnson</h6>
+                <span class="user-role"><i class="fas fa-shield-alt me-1"></i>Resolver</span>
+            </div>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item active">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="complaints.html" class="nav-item">
+                <i class="fas fa-clipboard-list"></i>
+                <span>All Complaints</span>
+                <span class="badge-count" id="totalComplaints">0</span>
+            </a>
+            <a href="complaints.html?status=pending" class="nav-item">
+                <i class="fas fa-clock"></i>
+                <span>Pending</span>
+                <span class="badge-count badge-warning" id="pendingCount">0</span>
+            </a>
+            <a href="complaints.html?status=in-progress" class="nav-item">
+                <i class="fas fa-spinner"></i>
+                <span>In Progress</span>
+                <span class="badge-count badge-info" id="inProgressCount">0</span>
+            </a>
+            <a href="complaints.html?status=resolved" class="nav-item">
+                <i class="fas fa-check-circle"></i>
+                <span>Resolved</span>
+                <span class="badge-count badge-success" id="resolvedCount">0</span>
+            </a>
+            <a href="complaints.html?status=spam" class="nav-item">
+                <i class="fas fa-ban"></i>
+                <span>Spam</span>
+                <span class="badge-count badge-danger" id="spamCount">0</span>
+            </a>
+            <div class="sidebar-divider"></div>
+            <a href="settings.html" class="nav-item">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <a href="../../auth/login.html" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+        <!-- Top Navbar -->
+        <nav class="dashboard-navbar">
+            <div class="navbar-left">
+                <button class="mobile-toggle" id="mobileToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h4 class="page-title">Resolver Dashboard</h4>
+            </div>
+            
+            <div class="navbar-right">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search complaints...">
+                </div>
+                
+                <div class="navbar-actions">
+                    <!-- Notification Dropdown -->
+                    <div class="dropdown">
+                        <button type="button" class="action-btn" id="notificationBtn" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-badge" id="notificationCount">3</span>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end notification-dropdown" aria-labelledby="notificationBtn">
+                            <div class="notification-header">
+                                <h6 class="mb-0">Notifications</h6>
+                                <button class="btn btn-link btn-sm text-primary p-0" onclick="markAllAsRead()">Mark all as read</button>
+                            </div>
+                            <div class="notification-list" id="notificationList">
+                                <!-- Notifications will be loaded here -->
+                            </div>
+                            <div class="notification-footer">
+                                <a href="#" class="text-center d-block">View All Notifications</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="action-btn btn-qr" data-bs-toggle="modal" data-bs-target="#qrModal" title="Share QR Code">
+                        <i class="fas fa-qrcode"></i>
+                    </button>
+                    
+                    <!-- User Avatar Dropdown -->
+                    <div class="dropdown">
+                        <button type="button" class="user-profile-btn" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="user-avatar-small">
+                                <i class="fas fa-user-tie"></i>
+                            </div>
+                            <i class="fas fa-chevron-down ms-1"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li class="dropdown-header">
+                                <div class="d-flex align-items-center">
+                                    <div class="user-avatar-small me-2">
+                                        <i class="fas fa-user-tie"></i>
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold" id="dropdownUserName">Sarah Johnson</div>
+                                        <small class="text-muted">Resolver</small>
+                                    </div>
+                                </div>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="settings.html"><i class="fas fa-user me-2"></i>Profile</a></li>
+                            <li><a class="dropdown-item" href="settings.html"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="../../auth/login.html"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Dashboard Content -->
+        <div class="dashboard-content">
+            <div class="container-fluid">
+                
+                <!-- Welcome Section -->
+                <div class="welcome-section mb-4">
+                    <div class="row align-items-center">
+                        <div class="col-lg-8">
+                            <h2 class="welcome-title">Welcome back, <span id="welcomeName">Sarah</span>! 👋</h2>
+                            <p class="welcome-subtitle">Here's your complaint resolution overview for today.</p>
+                        </div>
+                        <div class="col-lg-4 text-lg-end">
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#qrModal">
+                                <i class="fas fa-qrcode me-2"></i>Share QR Code
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="row g-4 mb-4">
+                    <!-- Total Assigned -->
+                    <div class="col-lg-3 col-md-6">
+                        <div class="stats-card stats-primary">
+                            <div class="stats-icon">
+                                <i class="fas fa-clipboard-list"></i>
+                            </div>
+                            <div class="stats-content">
+                                <h3 class="stats-number" id="totalAssigned">0</h3>
+                                <p class="stats-label">Total Assigned</p>
+                            </div>
+                            <div class="stats-trend stats-up">
+                                <i class="fas fa-arrow-up"></i> 12%
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pending -->
+                    <div class="col-lg-3 col-md-6">
+                        <div class="stats-card stats-warning">
+                            <div class="stats-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="stats-content">
+                                <h3 class="stats-number" id="pendingStats">0</h3>
+                                <p class="stats-label">Pending</p>
+                            </div>
+                            <div class="stats-trend stats-up">
+                                <i class="fas fa-arrow-up"></i> 5%
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- In Progress -->
+                    <div class="col-lg-3 col-md-6">
+                        <div class="stats-card stats-info">
+                            <div class="stats-icon">
+                                <i class="fas fa-spinner"></i>
+                            </div>
+                            <div class="stats-content">
+                                <h3 class="stats-number" id="inProgressStats">0</h3>
+                                <p class="stats-label">In Progress</p>
+                            </div>
+                            <div class="stats-trend">
+                                <i class="fas fa-minus"></i> 0%
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Resolved -->
+                    <div class="col-lg-3 col-md-6">
+                        <div class="stats-card stats-success">
+                            <div class="stats-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="stats-content">
+                                <h3 class="stats-number" id="resolvedStats">0</h3>
+                                <p class="stats-label">Resolved</p>
+                            </div>
+                            <div class="stats-trend stats-up">
+                                <i class="fas fa-arrow-up"></i> 18%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Secondary Stats -->
+                <div class="row g-4 mb-4">
+                    <div class="col-lg-3 col-md-6">
+                        <div class="mini-stats-card">
+                            <div class="mini-stats-icon bg-danger-soft">
+                                <i class="fas fa-ban"></i>
+                            </div>
+                            <div>
+                                <h4 class="mini-stats-number" id="spamStats">0</h4>
+                                <p class="mini-stats-label">Marked as Spam</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-3 col-md-6">
+                        <div class="mini-stats-card">
+                            <div class="mini-stats-icon bg-primary-soft">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div>
+                                <h4 class="mini-stats-number" id="avgTimeStats">2.5h</h4>
+                                <p class="mini-stats-label">Avg. Resolution Time</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-3 col-md-6">
+                        <div class="mini-stats-card">
+                            <div class="mini-stats-icon bg-success-soft">
+                                <i class="fas fa-trophy"></i>
+                            </div>
+                            <div>
+                                <h4 class="mini-stats-number" id="resolutionRate">92%</h4>
+                                <p class="mini-stats-label">Resolution Rate</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-3 col-md-6">
+                        <div class="mini-stats-card">
+                            <div class="mini-stats-icon bg-warning-soft">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div>
+                                <h4 class="mini-stats-number" id="urgentStats">0</h4>
+                                <p class="mini-stats-label">Urgent Priority</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Content Grid -->
+                <div class="row g-4">
+                    <!-- Recent Complaints -->
+                    <div class="col-lg-8">
+                        <div class="content-card">
+                            <div class="card-header-custom">
+                                <h5 class="card-title">
+                                    <i class="fas fa-list me-2"></i>Recent Complaints
+                                </h5>
+                                <a href="complaints.html" class="btn btn-sm btn-outline-primary">
+                                    View All <i class="fas fa-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                            <div class="card-body-custom">
+                                <div class="table-responsive">
+                                    <table class="table table-hover complaints-table" id="recentComplaintsTable">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Title</th>
+                                                <th>Priority</th>
+                                                <th>Status</th>
+                                                <th>Date</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Loading state -->
+                                            <tr class="loading-row">
+                                                <td colspan="6" class="text-center py-5">
+                                                    <div class="spinner-border text-primary" role="status">
+                                                        <span class="visually-hidden">Loading...</span>
+                                                    </div>
+                                                    <p class="mt-2 text-muted">Loading complaints...</p>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Activity Feed -->
+                    <div class="col-lg-4">
+                        <div class="content-card">
+                            <div class="card-header-custom">
+                                <h5 class="card-title">
+                                    <i class="fas fa-history me-2"></i>Recent Activity
+                                </h5>
+                            </div>
+                            <div class="card-body-custom">
+                                <div class="activity-feed" id="activityFeed">
+                                    <!-- Loading state -->
+                                    <div class="text-center py-4">
+                                        <div class="spinner-border spinner-border-sm text-primary" role="status">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                        <p class="mt-2 text-muted small">Loading activity...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="content-card mt-4">
+                            <div class="card-header-custom">
+                                <h5 class="card-title">
+                                    <i class="fas fa-bolt me-2"></i>Quick Actions
+                                </h5>
+                            </div>
+                            <div class="card-body-custom">
+                                <div class="quick-actions">
+                                    <button class="quick-action-btn" onclick="window.location.href='complaints.html?status=pending'">
+                                        <i class="fas fa-clock"></i>
+                                        <span>View Pending</span>
+                                    </button>
+                                    <button class="quick-action-btn" onclick="window.location.href='complaints.html?priority=urgent'">
+                                        <i class="fas fa-exclamation-circle"></i>
+                                        <span>Urgent Cases</span>
+                                    </button>
+                                    <button class="quick-action-btn" data-bs-toggle="modal" data-bs-target="#qrModal">
+                                        <i class="fas fa-qrcode"></i>
+                                        <span>Share QR Code</span>
+                                    </button>
+                                    <button class="quick-action-btn" onclick="window.location.href='settings.html'">
+                                        <i class="fas fa-cog"></i>
+                                        <span>Settings</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- QR Code Modal -->
+    <div class="modal fade" id="qrModal" tabindex="-1" aria-labelledby="qrModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="qrModalLabel">
+                        <i class="fas fa-qrcode me-2"></i>Share QR Code
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <p class="text-muted mb-4">Share this QR code to receive anonymous complaints</p>
+                    
+                    <!-- QR Code Display -->
+                    <div class="qr-code-container mb-4">
+                        <div id="qrCodeDisplay" class="qr-code-canvas">
+                            <!-- QR code will be generated here -->
+                        </div>
+                    </div>
+
+                    <!-- QR Link -->
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="qrLink" readonly value="Loading...">
+                        <button class="btn btn-outline-primary" type="button" id="copyLinkBtn">
+                            <i class="fas fa-copy me-1"></i>Copy
+                        </button>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex gap-2 justify-content-center">
+                        <button class="btn btn-primary" id="downloadQrBtn">
+                            <i class="fas fa-download me-2"></i>Download QR
+                        </button>
+                        <button class="btn btn-outline-primary" id="shareQrBtn">
+                            <i class="fas fa-share-alt me-2"></i>Share
+                        </button>
+                    </div>
+
+                    <div class="alert alert-info mt-4 text-start">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <small>Users can scan this QR code to submit anonymous complaints or login to the system.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+    <!-- QR Code Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    
+    <!-- Project JS -->
+    <script src="../../shared/js/config.js"></script>
+    <script src="../../shared/js/utils.js"></script>
+    <script src="../../shared/js/dashboard-common.js"></script>
+    <script src="../js/dashboard.js"></script>
+    <script src="../js/qr-handler.js"></script>
+    
+    <!-- Debug: Ensure sidebar toggle works -->
+    <script>
+        $(document).ready(function() {
+            console.log('Sidebar toggle button exists:', $('#sidebarToggle').length > 0);
+            console.log('Sidebar exists:', $('#sidebar').length > 0);
+        });
+    </script>
+
+</body>
+</html>

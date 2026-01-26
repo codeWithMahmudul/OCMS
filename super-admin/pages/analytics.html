@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Platform Analytics - Super Admin - ComplainBox</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../shared/css/variables.css">
+    <link rel="stylesheet" href="../../shared/css/utilities.css">
+    <link rel="stylesheet" href="../../shared/css/dashboard-common.css">
+    <link rel="stylesheet" href="../css/super-admin.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="dashboard-sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Super Admin</span>
+                </div>
+                <button type="button" class="sidebar-toggle" id="sidebarToggle">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="organizations.html" class="nav-item">
+                    <i class="fas fa-building"></i>
+                    <span>Organizations</span>
+                </a>
+                <a href="users.html" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    <span>All Users</span>
+                </a>
+                <a href="analytics.html" class="nav-item active">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Platform Analytics</span>
+                </a>
+                <a href="billing.html" class="nav-item">
+                    <i class="fas fa-credit-card"></i>
+                    <span>Billing & Plans</span>
+                </a>
+                <a href="system-settings.html" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>System Settings</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <!-- Top Navigation -->
+            <nav class="dashboard-navbar">
+                <div class="navbar-left">
+                    <button type="button" class="sidebar-toggle mobile-toggle" id="mobileSidebarToggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search..." id="globalSearch">
+                    </div>
+                </div>
+                
+                <div class="navbar-right">
+                    <!-- Notifications -->
+                    <div class="dropdown notification-dropdown">
+                        <button type="button" class="icon-btn" id="notificationDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-badge" id="notificationCount">3</span>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end notification-panel" aria-labelledby="notificationDropdown">
+                            <div class="notification-header">
+                                <h6>Notifications</h6>
+                                <button type="button" class="btn-link" onclick="markAllAsRead()">Mark all as read</button>
+                            </div>
+                            <div class="notification-list" id="notificationList">
+                                <div class="text-center py-4">
+                                    <div class="spinner-border spinner-border-sm text-primary" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="notification-footer">
+                                <a href="#" class="btn-link">View all notifications</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- User Menu -->
+                    <div class="dropdown user-dropdown">
+                        <button type="button" class="user-btn" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="user-avatar">
+                                <i class="fas fa-user-shield"></i>
+                            </div>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end user-menu" aria-labelledby="userDropdown">
+                            <div class="user-menu-header">
+                                <div class="user-avatar">
+                                    <i class="fas fa-user-shield"></i>
+                                </div>
+                                <div class="user-info">
+                                    <div class="user-name" id="dropdownUserName">Super Admin</div>
+                                    <div class="user-role">System Administrator</div>
+                                </div>
+                            </div>
+                            <a href="#" class="dropdown-item">
+                                <i class="fas fa-user"></i>
+                                <span>My Profile</span>
+                            </a>
+                            <a href="system-settings.html" class="dropdown-item">
+                                <i class="fas fa-cog"></i>
+                                <span>Settings</span>
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a href="#" class="dropdown-item text-danger" onclick="handleLogout()">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Logout</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Content Area -->
+            <div class="dashboard-content">
+                <!-- Page Header -->
+                <div class="page-header mb-4">
+                    <div>
+                        <h1 class="page-title">Platform Analytics</h1>
+                        <p class="page-description">Monitor platform performance and usage statistics</p>
+                    </div>
+                </div>
+
+                <!-- Date Range Filter -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row g-3 align-items-end">
+                            <div class="col-md-3">
+                                <label class="form-label small">Date Range</label>
+                                <select class="form-select" id="dateRange" onchange="handleDateRangeChange()">
+                                    <option value="today">Today</option>
+                                    <option value="yesterday">Yesterday</option>
+                                    <option value="7days">Last 7 Days</option>
+                                    <option value="30days" selected>Last 30 Days</option>
+                                    <option value="90days">Last 90 Days</option>
+                                    <option value="year">This Year</option>
+                                    <option value="custom">Custom Range</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3" id="customDateStart" style="display: none;">
+                                <label class="form-label small">Start Date</label>
+                                <input type="date" class="form-control" id="startDate">
+                            </div>
+                            <div class="col-md-3" id="customDateEnd" style="display: none;">
+                                <label class="form-label small">End Date</label>
+                                <input type="date" class="form-control" id="endDate">
+                            </div>
+                            <div class="col-md-3">
+                                <button type="button" class="btn btn-primary" onclick="loadAnalytics()">
+                                    <i class="fas fa-sync-alt me-1"></i>Refresh Data
+                                </button>
+                                <button type="button" class="btn btn-outline-primary" onclick="exportReport()">
+                                    <i class="fas fa-download me-1"></i>Export
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Key Metrics -->
+                <div class="row g-3 mb-4">
+                    <div class="col-xl-3 col-md-6">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-primary">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="stat-details">
+                                <div class="stat-value" id="totalComplaints">0</div>
+                                <div class="stat-label">Total Complaints</div>
+                                <div class="stat-change positive" id="complaintsChange">
+                                    <i class="fas fa-arrow-up"></i> 12.5%
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-success">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="stat-details">
+                                <div class="stat-value" id="resolvedRate">0%</div>
+                                <div class="stat-label">Resolution Rate</div>
+                                <div class="stat-change positive" id="resolvedChange">
+                                    <i class="fas fa-arrow-up"></i> 8.3%
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-info">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="stat-details">
+                                <div class="stat-value" id="avgResponseTime">0h</div>
+                                <div class="stat-label">Avg Response Time</div>
+                                <div class="stat-change negative" id="responseChange">
+                                    <i class="fas fa-arrow-down"></i> 15.2%
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-warning">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                            <div class="stat-details">
+                                <div class="stat-value" id="totalRevenue">$0</div>
+                                <div class="stat-label">Total Revenue</div>
+                                <div class="stat-change positive" id="revenueChange">
+                                    <i class="fas fa-arrow-up"></i> 23.1%
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Row 1 -->
+                <div class="row g-3 mb-4">
+                    <div class="col-xl-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-chart-area me-2"></i>Complaints Trend
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="complaintsTrendChart" height="80"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-chart-pie me-2"></i>Status Distribution
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="statusDistributionChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Row 2 -->
+                <div class="row g-3 mb-4">
+                    <div class="col-xl-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-users me-2"></i>User Growth
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="userGrowthChart" height="60"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-dollar-sign me-2"></i>Revenue Trend
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="revenueTrendChart" height="60"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Row 3 -->
+                <div class="row g-3 mb-4">
+                    <div class="col-xl-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-tags me-2"></i>Top Categories
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="topCategoriesChart" height="60"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-building me-2"></i>Top Organizations
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="topOrganizationsChart" height="60"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Performance Metrics -->
+                <div class="row g-3">
+                    <div class="col-xl-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-tachometer-alt me-2"></i>Performance Metrics
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="performance-metric">
+                                    <div class="metric-info">
+                                        <div class="metric-label">Average Resolution Time</div>
+                                        <div class="metric-value" id="avgResolutionTime">--</div>
+                                    </div>
+                                    <div class="metric-bar">
+                                        <div class="progress">
+                                            <div class="progress-bar bg-success" id="resolutionTimeBar" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="performance-metric">
+                                    <div class="metric-info">
+                                        <div class="metric-label">First Response Time</div>
+                                        <div class="metric-value" id="firstResponseTime">--</div>
+                                    </div>
+                                    <div class="metric-bar">
+                                        <div class="progress">
+                                            <div class="progress-bar bg-info" id="firstResponseBar" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="performance-metric">
+                                    <div class="metric-info">
+                                        <div class="metric-label">Customer Satisfaction</div>
+                                        <div class="metric-value" id="customerSatisfaction">--</div>
+                                    </div>
+                                    <div class="metric-bar">
+                                        <div class="progress">
+                                            <div class="progress-bar bg-warning" id="satisfactionBar" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="performance-metric">
+                                    <div class="metric-info">
+                                        <div class="metric-label">Platform Uptime</div>
+                                        <div class="metric-value" id="platformUptime">--</div>
+                                    </div>
+                                    <div class="metric-bar">
+                                        <div class="progress">
+                                            <div class="progress-bar bg-primary" id="uptimeBar" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-trophy me-2"></i>Top Performers
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Resolver</th>
+                                                <th>Resolved</th>
+                                                <th>Avg Time</th>
+                                                <th>Rating</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="topPerformersTable">
+                                            <tr>
+                                                <td colspan="4" class="text-center py-3">
+                                                    <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+    <!-- Bootstrap Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Common Dashboard JS -->
+    <script src="../../shared/js/config.js"></script>
+    <script src="../../shared/js/utils.js"></script>
+    <script src="../../shared/js/dashboard-common.js"></script>
+    
+    <!-- Page Specific JS -->
+    <script src="../js/analytics.js"></script>
+</body>
+</html>

@@ -3,10 +3,10 @@
 $(document).ready(function() {
     
     // === Check Authentication ===
-    if (!isAuthenticated()) {
-        window.location.href = '../auth/login.html';
-        return;
-    }
+    // if (!isAuthenticated()) {
+    //     window.location.href = '../auth/login.html';
+    //     return;
+    // }
     
     // === Load User Data ===
     const userData = getUserData();
@@ -20,31 +20,43 @@ $(document).ready(function() {
     }
     
     // === Sidebar Toggle (Desktop) ===
-    $('#sidebarToggle, .sidebar-toggle').click(function(e) {
+    $(document).on('click', '#sidebarToggle, .sidebar-toggle', function(e) {
         e.preventDefault();
-        $('.dashboard-sidebar').toggleClass('collapsed');
-        saveToStorage(CONFIG.STORAGE_KEYS.SIDEBAR_STATE, $('.dashboard-sidebar').hasClass('collapsed'));
+        e.stopPropagation();
+        
+        console.log('Sidebar toggle clicked'); // Debug
+        
+        const sidebar = $('.dashboard-sidebar');
+        const icon = $(this).find('i');
+        
+        sidebar.toggleClass('collapsed');
+        
+        // Toggle icon between bars and times
+        if (sidebar.hasClass('collapsed')) {
+            icon.removeClass('fa-times').addClass('fa-bars');
+            console.log('Sidebar collapsed'); // Debug
+        } else {
+            icon.removeClass('fa-bars').addClass('fa-times');
+            console.log('Sidebar expanded'); // Debug
+        }
+        
+        saveToStorage(CONFIG.STORAGE_KEYS.SIDEBAR_STATE, sidebar.hasClass('collapsed'));
     });
     
     // === Mobile Menu Toggle ===
-    $('#mobileToggle').click(function(e) {
+    $(document).on('click', '#mobileToggle', function(e) {
         e.preventDefault();
-        $('.dashboard-sidebar').toggleClass('active');
-        $('.mobile-overlay').toggleClass('active');
+        $('.dashboard-sidebar').toggleClass('show');
         $('body').toggleClass('no-scroll');
     });
     
     // === Mobile Overlay Click (Close Sidebar) ===
-    $('.mobile-overlay').click(function() {
-        $('.dashboard-sidebar').removeClass('active');
-        $(this).removeClass('active');
-        $('body').removeClass('no-scroll');
-    });
-    
     // === Load Sidebar State from Storage ===
     const sidebarCollapsed = getFromStorage(CONFIG.STORAGE_KEYS.SIDEBAR_STATE);
     if (sidebarCollapsed) {
         $('.dashboard-sidebar').addClass('collapsed');
+        // Update icon to match collapsed state
+        $('#sidebarToggle, .sidebar-toggle').find('i').removeClass('fa-times').addClass('fa-bars');
     }
     
     // === Active Navigation Item ===
@@ -73,12 +85,8 @@ $(document).ready(function() {
     }
     
     // === Initialize Bootstrap Dropdowns ===
-    if (typeof bootstrap !== 'undefined') {
-        const dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
-        dropdownElementList.map(function (dropdownToggleEl) {
-            return new bootstrap.Dropdown(dropdownToggleEl);
-        });
-    }
+    // Bootstrap auto-initializes dropdowns with data-bs-toggle="dropdown"
+    // No manual initialization needed
     
     // === Search Functionality ===
     let searchTimeout;
@@ -138,6 +146,9 @@ $(document).ready(function() {
     }
     
     // === User Dropdown (if not using Bootstrap) ===
+    // Commented out - this conflicts with Bootstrap dropdowns
+    // If you need custom dropdowns without Bootstrap, uncomment this:
+    /*
     $('.user-btn').click(function(e) {
         e.stopPropagation();
         $(this).next('.dropdown-menu').toggleClass('show');
@@ -150,6 +161,7 @@ $(document).ready(function() {
     $('.dropdown-menu').click(function(e) {
         e.stopPropagation();
     });
+    */
     
     // === Form Auto-save (Draft) ===
     let autoSaveTimeout;
